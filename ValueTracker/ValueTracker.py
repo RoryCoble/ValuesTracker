@@ -4,8 +4,6 @@ import pages.Register
 import pages.Entities
 from packages.ApiRequests import ApiRequests
 from packages.UiSettings import SettingsState
-import matplotlib.pyplot as plt
-from reflex_pyplot import pyplot
 import asyncio
 from datetime import datetime
 
@@ -58,6 +56,13 @@ class State(rx.State):
     @rx.event
     def navigate_entities(self):
         return rx.redirect("/entities")
+
+    @rx.event
+    async def logoff(self):
+        settings = await self.get_state(pages.Login.LoginState)
+        settings.logged_in = False
+        self.stream = False
+        return rx.redirect("/login")
 
 def build_graph(entity, index):
     return rx.card(
@@ -132,6 +137,14 @@ def index():
                                                 "width":"10vw"
                                             },
                                         )
+                                    ),
+                                    rx.button(
+                                        "Log Off",
+                                        on_click=State.logoff,
+                                        color_scheme="purple",
+                                        style={
+                                            "width":"10vw"
+                                        },
                                     ),
                                 ),
                                 top="auto",

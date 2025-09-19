@@ -44,6 +44,12 @@ class EntitiesState(rx.State):
         if form_data["entity"] in self.available_entities:
             ApiRequests(self.api_url).connect_user_entity(self.user_name, form_data["entity"])
         return rx.redirect("/entities")
+
+    @rx.event
+    async def logoff(self):
+        settings = await self.get_state(pages.Login.LoginState)
+        settings.logged_in = False
+        return rx.redirect("/login")
         
 def show_record(entitiesDetails: EntityDetails):
     """Show a customer in a table row."""
@@ -94,6 +100,14 @@ def entities_page():
                                                 "width":"10vw"
                                             },
                                         )
+                                    ),
+                                    rx.button(
+                                        "Log Off",
+                                        on_click=EntitiesState.logoff,
+                                        color_scheme="purple",
+                                        style={
+                                            "width":"10vw"
+                                        },
                                     ),
                                 ),
                                 top="auto",

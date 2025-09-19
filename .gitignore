@@ -1,2 +1,8 @@
+assets/external/
+*.db
+*.py[cod]
+.states
+__pycache__/
+.web
 __pycache__
 .ipynb_checkpoints
