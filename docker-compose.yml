@@ -1,0 +1,46 @@
+networks:
+  backend:
+  frontend:
+services:
+  db:
+    build:
+      context: ./sql
+      dockerfile: db.dockerfile
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: EntitiesAndValues
+    ports:
+      - "5431:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d EntitiesAndValues"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - backend
+  dataseeder:
+    build:
+      context: .
+      dockerfile: dataseeder.dockerfile
+      network: host
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    networks:
+      - backend
+  api:
+    build:
+      context: .
+      dockerfile: api.dockerfile
+      network: host
+    ports:
+      - "5001:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    networks:
+      - backend
+      - frontend
