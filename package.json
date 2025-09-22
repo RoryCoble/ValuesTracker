@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "cypress": "^15.2.0",
+    "pg": "^8.16.3"
+  }
+}

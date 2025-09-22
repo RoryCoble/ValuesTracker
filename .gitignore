@@ -6,3 +6,4 @@ __pycache__/
 .web
 __pycache__
 .ipynb_checkpoints
+node_modules/
