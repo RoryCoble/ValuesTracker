@@ -44,3 +44,30 @@ services:
     networks:
       - backend
       - frontend
+  web_backend:
+    build:
+      context: . 
+      dockerfile: web_backend.dockerfile
+      network: host
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+      - api
+    networks:
+      - frontend
+  web_frontend:
+    build:
+      context: .
+      dockerfile: web_frontend.dockerfile
+      network: host
+    ports:
+      - 3000:80
+    depends_on:
+      - web_backend
+    networks:
+      - frontend  
+  redis:
+    image: redis
+    networks:
+      - frontend  
