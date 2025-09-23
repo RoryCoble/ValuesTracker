@@ -54,7 +54,7 @@ class DataSeeder:
             i+=1
             for entity in entities:
                 self.add_entity_value(i, entity)
-            time.sleep(random.randrange(0,5))
+            time.sleep(random.randrange(10,60))
 
 if __name__ == "__main__":
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', 'db', 5432) as conn:

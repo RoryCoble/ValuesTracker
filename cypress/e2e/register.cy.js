@@ -1,9 +1,14 @@
+function register(username, password, email) {
+  cy.get('[name="userName"]').type('a')
+  cy.get('[name="password"]').type('a')
+  cy.get('[name="email"]').type('a')
+  cy.get('[type="submit"]').click()
+}
+
 describe('Register page', () => {
-  before(() => {
-    cy.task('userDb', 'TRUNCATE TABLE public.users')
-  })
 
   beforeEach(() => {
+    cy.task('userDb', 'TRUNCATE TABLE public.users')  
     cy.visit('/')
     cy.contains('Register').dblclick()
   })    
@@ -18,7 +23,19 @@ describe('Register page', () => {
   })
 
   it('returns to the login page when cancel is clicked', () => {
-    cy.contains('Cancel').click()
-    cy.url().should('include', '/login')
-  })    
+    cy.contains('Cancel').dblclick()
+    cy.url().should('include', '/login')  
+  })
+
+  it('sucessfully registers a new user', () => {
+    register('a','a','a')
+    cy.url().should('include', '/login')    
+  })
+
+  it('throws an error when someone tries to register an existing user', () => {
+    register('a','a','a')
+    cy.contains('Register').dblclick()
+    register('a','a','a')
+    cy.get('li[data-sonner-toast]').should('be.visible').and('have.text', 'User failed to be created')
+  })
 })
