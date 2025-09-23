@@ -13,11 +13,9 @@ describe('Login page', () => {
         },
     })
   })
-  beforeEach(() => {
-    cy.visit('/')
-  })
 
   it('displays the expected elements', () => {
+    cy.visit('/')  
     cy.get('h1').should('be.visible').and('have.text', 'Login')
     cy.get('[name="userName"]').should('be.visible').and('have.attr', 'placeholder', 'User Name')
     cy.get('[name="password"]').should('be.visible').and('have.attr', 'placeholder', 'Password')
