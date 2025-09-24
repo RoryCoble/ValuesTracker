@@ -44,6 +44,20 @@ services:
     networks:
       - backend
       - frontend
+  dataseeder_api:
+    build:
+      context: .
+      dockerfile: dataseeder_api.dockerfile
+      network: host
+    ports:
+      - "5002:5002"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    networks:
+      - backend
+      - frontend  
   web_backend:
     build:
       context: . 
