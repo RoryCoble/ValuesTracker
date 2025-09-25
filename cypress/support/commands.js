@@ -9,7 +9,7 @@
 // ***********************************************
 Cypress.Commands.add('login', (username, password) => {
   cy.visit('/')  
-  cy.get('input[name=userName]').type(username)
+  cy.get('input[data-testid="usernameInput"]').type(username)
   // {enter} causes the form to submit
-  cy.get('input[name=password]').type(`${password}{enter}`, { log: false })
+  cy.get('input[data-testid="passwordInput"]').type(`${password}{enter}`, { log: false })
 })

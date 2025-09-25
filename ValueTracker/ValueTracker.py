@@ -67,7 +67,12 @@ class State(rx.State):
 def build_graph(entity, index):
     return rx.card(
         rx.vstack(
-            rx.heading(entity),
+            rx.heading(
+                entity,
+                custom_attrs = {
+                    "data-testid" : f"{entity}-Header",
+                },
+            ),
             rx.recharts.line_chart(
                 rx.recharts.line(
                     data_key="value",
@@ -90,6 +95,9 @@ def build_graph(entity, index):
                     "left": 20,
                     "bottom": 20,
                 },
+                custom_attrs = {
+                    "data-testid" : f"{entity}-Graph",
+                },
             ),
         ),
         style={
@@ -101,78 +109,98 @@ def build_graph(entity, index):
 def index():
     # Welcome Page (Index)
     return rx.fragment(
-                rx.hstack(
-                    rx.drawer.root(
-                        rx.drawer.trigger(
-                            rx.image(
-                                src="/menu.png",
-                            ),
-                        ),
-                        rx.drawer.overlay(z_index="5"),
-                        rx.drawer.portal(
-                            rx.drawer.content(
-                                rx.vstack(
-                                    rx.button(
-                                        "Home",
-                                        on_click=State.navigate_home,
-                                        color_scheme="purple",
-                                        disabled=True,
-                                        style={
-                                            "width":"10vw"
-                                        },
-                                    ),
-                                    rx.button(
-                                        "Manage Entities",
-                                        on_click=State.navigate_entities,
-                                        color_scheme="purple",
-                                        style={
-                                            "width":"10vw"
-                                        },
-                                    ),
-                                    rx.drawer.close(
-                                        rx.button(
-                                            "Close Menu",
-                                            color_scheme="purple",
-                                            style={
-                                                "width":"10vw"
-                                            },
-                                        )
-                                    ),
-                                    rx.button(
-                                        "Log Off",
-                                        on_click=State.logoff,
-                                        color_scheme="purple",
-                                        style={
-                                            "width":"10vw"
-                                        },
-                                    ),
-                                ),
-                                top="auto",
-                                right="auto",
-                                height="100%",
-                                width="20em",
-                                padding="2em",
-                            ),
-                            direction="left",
+            rx.hstack(
+                rx.drawer.root(
+                    rx.drawer.trigger(
+                        rx.image(
+                            src="/menu.png",
+                            custom_attrs = {
+                                "data-testid" : "menuButton",
+                            },
                         ),
                     ),
-                    rx.container(
-                        rx.vstack(
-                            rx.heading("Entity Tracker"),
-                            rx.divider(),
+                    rx.drawer.overlay(z_index="5"),
+                    rx.drawer.portal(
+                        rx.drawer.content(
                             rx.vstack(
-                                rx.foreach(
-                                    State.entities,
-                                    lambda entity, index: build_graph(
-                                        entity, index
-                                    ),
+                                rx.button(
+                                    "Home",
+                                    on_click=State.navigate_home,
+                                    color_scheme="purple",
+                                    disabled=True,
+                                    custom_attrs = {
+                                        "data-testid" : "homeButton",
+                                    },
+                                    style={
+                                        "width":"10vw"
+                                    },
                                 ),
-                                on_mount=State.start_stream,
-                                on_unmount=State.stop_stream,
+                                rx.button(
+                                    "Manage Entities",
+                                    on_click=State.navigate_entities,
+                                    color_scheme="purple",
+                                    custom_attrs = {
+                                        "data-testid" : "manageEntitiesButton",
+                                    },
+                                    style={
+                                        "width":"10vw"
+                                    },
+                                ),
+                                rx.drawer.close(
+                                    rx.button(
+                                        "Close Menu",
+                                        color_scheme="purple",
+                                        custom_attrs = {
+                                            "data-testid" : "closeButton",
+                                        },
+                                        style={
+                                            "width":"10vw"
+                                        },
+                                    )
+                                ),
+                                rx.button(
+                                    "Log Off",
+                                    on_click=State.logoff,
+                                    color_scheme="purple",
+                                    custom_attrs = {
+                                        "data-testid" : "logOffButton",
+                                    },
+                                    style={
+                                        "width":"10vw"
+                                    },
+                                ),
                             ),
+                            top="auto",
+                            right="auto",
+                            height="100%",
+                            width="20em",
+                            padding="2em",
+                        ),
+                        direction="left",
+                    ),
+                ),
+                rx.container(
+                    rx.vstack(
+                        rx.heading(
+                            "Entity Tracker",
+                            custom_attrs = {
+                                "data-testid" : "pageTitle",
+                            },
+                        ),
+                        rx.divider(),
+                        rx.vstack(
+                            rx.foreach(
+                                State.entities,
+                                lambda entity, index: build_graph(
+                                    entity, index
+                                ),
+                            ),
+                            on_mount=State.start_stream,
+                            on_unmount=State.stop_stream,
                         ),
                     ),
                 ),
+            ),
         )
 
 app = rx.App()

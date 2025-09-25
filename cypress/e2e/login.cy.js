@@ -6,7 +6,7 @@ describe('Login page', () => {
         method: 'POST', 
         url: 'http://localhost:5001/api/create_user',
         form: true,
-        body: { 
+        body: {
           userName : 'a', 
           password : 'a', 
           email : 'a' 
@@ -16,16 +16,16 @@ describe('Login page', () => {
 
   it('displays the expected elements', () => {
     cy.visit('/')  
-    cy.get('h1').should('be.visible').and('have.text', 'Login')
-    cy.get('[name="userName"]').should('be.visible').and('have.attr', 'placeholder', 'User Name')
-    cy.get('[name="password"]').should('be.visible').and('have.attr', 'placeholder', 'Password')
-    cy.get('[type="submit"]').should('be.visible').and('have.text', 'Submit')
-    cy.contains('Register').should('be.visible')  
+    cy.get('[data-testid="pageTitle"]').should('be.visible').and('have.text', 'Login')
+    cy.get('[data-testid="usernameInput"]').should('be.visible').and('have.attr', 'placeholder', 'User Name')
+    cy.get('[data-testid="passwordInput"]').should('be.visible').and('have.attr', 'placeholder', 'Password')
+    cy.get('[data-testid="submitButton"]').should('be.visible').and('have.text', 'Submit')
+    cy.get('[data-testid="registerLink"]').should('be.visible').and('have.text', 'Register')
   })
 
   it('logs in successfully', () => {
     cy.login('a', 'a')
-    cy.get('h1').should('be.visible').and('have.text', 'Entity Tracker')  
+    cy.get('[data-testid="pageTitle"]').should('be.visible').and('have.text', 'Entity Tracker')  
   })
 
   it('errors on unsuccessful login', () => {

@@ -59,6 +59,9 @@ def show_record(entitiesDetails: EntityDetails):
         rx.table.cell(entitiesDetails[2]),
         rx.table.cell(entitiesDetails[3]),
         rx.table.cell(entitiesDetails[4]),
+        custom_attrs = {
+            "data-testid" : "entitiesTableRow",
+        },
     )
             
 @rx.page(route="/entities", on_load=EntitiesState.on_load)
@@ -69,6 +72,9 @@ def entities_page():
                         rx.drawer.trigger(
                             rx.image(
                                 src="/menu.png",
+                                custom_attrs = {
+                                    "data-testid" : "menuButton",
+                                },
                             ),
                         ),
                         rx.drawer.overlay(z_index="5"),
@@ -79,6 +85,9 @@ def entities_page():
                                         "Home",
                                         on_click=EntitiesState.navigate_home,
                                         color_scheme="purple",
+                                        custom_attrs = {
+                                            "data-testid" : "homeButton",
+                                        },
                                         style={
                                             "width":"10vw"
                                         },
@@ -88,6 +97,9 @@ def entities_page():
                                         on_click=EntitiesState.navigate_entities,
                                         color_scheme="purple",
                                         disabled=True,
+                                        custom_attrs = {
+                                            "data-testid" : "manageEntitiesButton",
+                                        },
                                         style={
                                             "width":"10vw"
                                         },
@@ -96,6 +108,9 @@ def entities_page():
                                         rx.button(
                                             "Close Menu",
                                             color_scheme="purple",
+                                            custom_attrs = {
+                                                "data-testid" : "closeButton",
+                                            },
                                             style={
                                                 "width":"10vw"
                                             },
@@ -105,6 +120,9 @@ def entities_page():
                                         "Log Off",
                                         on_click=EntitiesState.logoff,
                                         color_scheme="purple",
+                                        custom_attrs = {
+                                            "data-testid" : "logOffButton",
+                                        },
                                         style={
                                             "width":"10vw"
                                         },
@@ -124,31 +142,69 @@ def entities_page():
                             rx.table.root(
                                 rx.table.header(
                                     rx.table.row(
-                                        rx.table.column_header_cell("Code"),
-                                        rx.table.column_header_cell("Type"),
-                                        rx.table.column_header_cell("First Constant"),
-                                        rx.table.column_header_cell("Second Constant"),
-                                        rx.table.column_header_cell("Third Constant"),
+                                        rx.table.column_header_cell(
+                                            "Code",
+                                            custom_attrs = {
+                                                "data-testid" : "codeHeader",
+                                            },
+                                        ),
+                                        rx.table.column_header_cell(
+                                            "Type",
+                                            custom_attrs = {
+                                                "data-testid" : "typeHeader",
+                                            },
+                                        ),
+                                        rx.table.column_header_cell(
+                                            "First Constant",
+                                            custom_attrs = {
+                                                "data-testid" : "firstConstantHeader",
+                                            },
+                                        ),
+                                        rx.table.column_header_cell(
+                                            "Second Constant",
+                                            custom_attrs = {
+                                                "data-testid" : "secondConstantHeader",
+                                            },
+                                        ),
+                                        rx.table.column_header_cell(
+                                            "Third Constant",
+                                            custom_attrs = {
+                                                "data-testid" : "thirdConstantHeader",
+                                            },
+                                        ),
                                     ),
                                 ),
                                 rx.table.body(
                                     rx.foreach(
                                         EntitiesState.entitiesDetails, show_record
-                                    )
+                                    ),
+                                    custom_attrs = {
+                                        "data-testid" : "entitiesTableBody",
+                                    },
                                 ),
                                 width="100%",
+                                custom_attrs = {
+                                    "data-testid" : "entitiesTable",
+                                },
                             ),
                             rx.card(
                                 rx.form(
                                     rx.hstack(
                                         rx.button(
-                                            "Add Entity", type='submit'
+                                            "Add Entity", 
+                                            type='submit',
+                                            custom_attrs = {
+                                                "data-testid" : "addEntityButton",
+                                            },
                                         ),
                                         rx.select(
                                             EntitiesState.available_entities,
                                             default_value="Select Entity",
                                             name='entity',
                                             required=True,
+                                            custom_attrs = {
+                                                "data-testid" : "entitySelect",
+                                            },
                                         ),
                                     ),
                                     on_submit=EntitiesState.handle_submit,

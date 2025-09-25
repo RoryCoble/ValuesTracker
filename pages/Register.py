@@ -37,27 +37,50 @@ def register_page():
         rx.card(
             rx.form(
                 rx.vstack(
-                    rx.heading("Register"),
+                    rx.heading(
+                        "Register",
+                        custom_attrs = {
+                            "data-testid" : "pageTitle",
+                        },
+                    ),
                     rx.input(
                         placeholder="User Name",
                         name="userName",
+                        custom_attrs = {
+                            "data-testid" : "usernameInput",
+                        },
                     ), 
                     rx.input(
                         placeholder="Password",
                         name="password",
+                        custom_attrs = {
+                            "data-testid" : "passwordInput",
+                        },
                     ),
                     rx.input(
                         placeholder="Email",
                         name="email",
+                        custom_attrs = {
+                            "data-testid" : "emailInput",
+                        },
                     ),
                     rx.hstack(
                         rx.button(
                             "Submit", 
                             type="submit",
                             color_scheme="purple",
+                            custom_attrs = {
+                                "data-testid" : "submitButton",
+                            },
                         ),
                         rx.center(
-                            rx.link("Cancel", on_click=rx.redirect("/login")),
+                            rx.link(
+                                "Cancel", 
+                                on_click=rx.redirect("/login"),
+                                custom_attrs = {
+                                    "data-testid" : "cancelLink",
+                                },
+                            ),
                             width="100%",
                         ),
                     ),

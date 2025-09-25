@@ -19,6 +19,20 @@ module.exports = defineConfig({
           await client.end()
           return res.rows;
         },
+
+        dataseederDb: async (query) => {
+          const client = new Client({
+            user: 'data_seeder',
+            password: 'data',
+            host: 'localhost',
+            database: 'EntitiesAndValues',
+            port: 5431
+          })
+          await client.connect()
+          const res = await client.query(query)
+          await client.end()
+          return res.rows;
+        },
       });
     },
   },

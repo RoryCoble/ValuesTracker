@@ -40,23 +40,43 @@ def login_page():
         rx.card(
             rx.form(
                 rx.vstack(
-                    rx.heading("Login"),
+                    rx.heading(
+                        "Login",
+                        custom_attrs = {
+                            "data-testid" : "pageTitle",
+                        },
+                    ),
                     rx.input(
                         placeholder="User Name",
                         name="userName",
+                        custom_attrs = {
+                            "data-testid" : "usernameInput",
+                        },
                     ), 
                     rx.input(
                         placeholder="Password",
                         name="password",
+                        custom_attrs = {
+                            "data-testid" : "passwordInput",
+                        },
                     ),
                     rx.hstack(
                         rx.button(
                             "Submit", 
                             type="submit",
                             color_scheme="purple",
+                            custom_attrs = {
+                                "data-testid" : "submitButton",
+                            },
                         ),
                         rx.center(
-                            rx.link("Register", on_click=rx.redirect("/register")),
+                            rx.link(
+                                "Register", 
+                                on_click=rx.redirect("/register"),
+                                custom_attrs = {
+                                    "data-testid" : "registerLink",
+                                },
+                            ),
                             width="100%",
                         ),
                     ),

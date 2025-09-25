@@ -16,31 +16,31 @@ describe('Page Menu', () => {
     
   beforeEach(() => {
     cy.login('a','a')
-    cy.get('[aria-haspopup="dialog"]').click()  
+    cy.get('[data-testid="menuButton"]').click()  
   })
 
   it('displays the expected links', () => {
-    cy.contains('Home').should('be.disabled')
-    cy.contains('Manage Entities').should('be.enabled')
-    cy.contains('Close Menu').should('be.enabled')
-    cy.contains('Log Off').should('be.enabled')
+    cy.get('[data-testid="homeButton"]').should('be.disabled').should('be.visible').and('have.text', 'Home')
+    cy.get('[data-testid="manageEntitiesButton"]').should('be.enabled').should('be.visible').and('have.text', 'Manage Entities')
+    cy.get('[data-testid="closeButton"]').should('be.enabled').should('be.visible').and('have.text', 'Close Menu')
+    cy.get('[data-testid="logOffButton"]').should('be.enabled').should('be.visible').and('have.text', 'Log Off')
   })
 
   it('navigates to the Manage Entities page', () => {
-    cy.contains('Manage Entities').click()
+    cy.get('[data-testid="manageEntitiesButton"]').click()
     cy.url().should('include', '/entities')
-    cy.get('[aria-haspopup="dialog"]').click()
-    cy.contains('Home').should('be.enabled')
-    cy.contains('Manage Entities').should('be.disabled')  
+    cy.get('[data-testid="menuButton"]').click()
+    cy.get('[data-testid="homeButton"]').should('be.enabled')
+    cy.get('[data-testid="manageEntitiesButton"]').should('be.disabled')  
   })
 
   it('closes when the button is clicked', () => {
-    cy.contains('Close Menu').click()
-    cy.contains('Close Menu').should('not.exist')  
+    cy.get('[data-testid="closeButton"]').click()
+    cy.get('[data-testid="closeButton"]').should('not.exist')  
   })
 
   it('log off the app when the button is clicked', () => {
-    cy.contains('Log Off').click()
+    cy.get('[data-testid="logOffButton"]').click()
     cy.url().should('include', '/login')  
   })
     
