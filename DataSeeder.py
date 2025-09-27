@@ -44,6 +44,7 @@ class DataSeeder:
                                     float(entityDetails[3]), 
                                     float(entityDetails[4]))
         self.entitiesValues.add_entity_value(code, datetime.now(), value)
+        return value
 
     def run(self):
         for _ in range(0,10):

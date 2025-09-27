@@ -23,8 +23,8 @@ def DataSeederApi(_entitiesValues, _dataseeder):
         count = int(request.form['count'])
         entityCode = request.form['entityCode']
 
-        success = app.config['DataSeeder'].add_entity_value(count, entityCode)
-        return jsonify(success)
+        value = app.config['DataSeeder'].add_entity_value(count, entityCode)
+        return jsonify(value)
 
     return app
 

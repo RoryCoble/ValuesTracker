@@ -5,6 +5,7 @@ COPY packages/__init__.py packages/__init__.py
 COPY packages/Databases.py packages/Databases.py
 COPY tests/__init__.py tests/__init__.py
 COPY tests/test_DataSeederApi.py tests/test_DataSeederApi.py
+COPY tests/test_DataSeeder.py tests/test_DataSeeder.py
 COPY dataseederapi_localtest.txt .
 COPY DataSeeder.py .
 COPY DataSeederApi.py .

@@ -39,7 +39,21 @@ describe('Manage Entities page', () => {
     cy.get('[data-testid="firstConstantHeader"]').should('be.visible').and('have.text', 'First Constant')
     cy.get('[data-testid="secondConstantHeader"]').should('be.visible').and('have.text', 'Second Constant')
     cy.get('[data-testid="thirdConstantHeader"]').should('be.visible').and('have.text', 'Third Constant')
-    cy.get('[data-testid="addEntityButton"]').should('be.visible').and('have.text', 'Add Entity')  
+    cy.get('[data-testid="addEntityButton"]').should('be.visible').and('have.text', 'Add Entity')
+    cy.get('[data-testid="entitySelect"]').should('be.visible')
+    cy.get('select[name="entity"] option:selected').invoke('text').should('eq', 'Select Entity')
+    cy.get('select[name="entity"]').select(0, { force: true }).invoke('val').should('eq', 'AAAAA')
+    cy.get('select[name="entity"]').select(1, { force: true }).invoke('val').should('eq', 'Select Entity')
+  })
+
+  it('should allow an Entity to be added and display the entities details', () => {
+    cy.get('select[name="entity"]').select(0, { force: true }).invoke('val').should('eq', 'AAAAA')
+    cy.get('[data-testid="addEntityButton"]').click()
+    cy.get('[data-testid="entitiesTableRow"] td').eq(0).should('be.visible').and('have.text', 'AAAAA')
+    cy.get('[data-testid="entitiesTableRow"] td').eq(1).should('be.visible').and('have.text', 'Volatile')
+    cy.get('[data-testid="entitiesTableRow"] td').eq(2).should('be.visible').and('have.text', '7.2')  
+    cy.get('[data-testid="entitiesTableRow"] td').eq(3).should('be.visible').and('have.text', '7.2')
+    cy.get('[data-testid="entitiesTableRow"] td').eq(4).should('be.visible').and('have.text', '7.2')    
   })
 
 })

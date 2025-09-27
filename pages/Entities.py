@@ -213,6 +213,7 @@ def entities_page():
                             ),
                         ),
                         width="100%",
+                        style={"pointer_events": "auto"},
                     ),
                 ),
             )
