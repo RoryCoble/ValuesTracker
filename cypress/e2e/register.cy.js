@@ -8,7 +8,11 @@ function register(username, password, email) {
 describe('Register page', () => {
 
   beforeEach(() => {
-    cy.task('userDb', 'TRUNCATE TABLE public.users')  
+    let query = 'TRUNCATE TABLE public.users, public.user_entities;'
+    const host = Cypress.env('database')
+    const port = Cypress.env('database_port')
+    let user = 'api'    
+    cy.task('databaseQuery', { query, host, port, user })
     cy.visit('/')
     cy.get('[data-testid="registerLink"]').dblclick()
   })    

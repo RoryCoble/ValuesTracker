@@ -84,4 +84,14 @@ services:
   redis:
     image: redis
     networks:
-      - frontend  
+      - frontend
+  cypress:
+    build:
+      context: .
+      dockerfile: cypress.dockerfile
+    depends_on:
+      - dataseeder_api
+      - web_frontend
+    networks:
+      - frontend
+      - backend

@@ -1,16 +1,20 @@
 describe('Login page', () => {
-
+  const query = 'TRUNCATE TABLE public.users'
+  const host = Cypress.env('database')
+  const port = Cypress.env('database_port')
+  const user = 'api'  
+    
   before(() => {
-    cy.task('userDb', 'TRUNCATE TABLE public.users')
+    cy.task('databaseQuery', { query, host, port, user })
     cy.request({
-        method: 'POST', 
-        url: 'http://localhost:5001/api/create_user',
-        form: true,
-        body: {
-          userName : 'a', 
-          password : 'a', 
-          email : 'a' 
-        },
+      method: 'POST', 
+      url: Cypress.env('api') + '/api/create_user',
+      form: true,
+      body: {
+        userName : 'a', 
+        password : 'a', 
+        email : 'a'
+      },
     })
   })
 

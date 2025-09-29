@@ -1,11 +1,17 @@
 describe('Manage Entities page', () => {
 
   before(() => {
-    cy.task('userDb', 'TRUNCATE TABLE public.users, public.user_entities;')
-    cy.task('dataseederDb', 'TRUNCATE TABLE public.entities, public.entity_values;')  
+    let query = 'TRUNCATE TABLE public.users, public.user_entities;'
+    const host = Cypress.env('database')
+    const port = Cypress.env('database_port')
+    let user = 'api'    
+    cy.task('databaseQuery', { query, host, port, user })
+    query = 'TRUNCATE TABLE public.entities, public.entity_values;'
+    user = 'data_seeder'  
+    cy.task('databaseQuery', { query, host, port, user }) 
     cy.request({
         method: 'POST', 
-        url: 'http://localhost:5001/api/create_user',
+        url: Cypress.env('api') + '/api/create_user',
         form: true,
         body: { 
           userName : 'a', 
@@ -15,7 +21,7 @@ describe('Manage Entities page', () => {
     })
     cy.request({
         method: 'POST',
-        url: 'http://localhost:5002/dataseed/add_entity',
+        url: Cypress.env('dataseeder_api') + '/dataseed/add_entity',
         form: true,
         body: {
           entityCode: 'AAAAA',
