@@ -3,12 +3,26 @@ from DataSeeder import DataSeeder
 from flask import Flask, jsonify, request
 
 def DataSeederApi(_entitiesValues, _dataseeder):
+    """Creates an API that allows for data seeding of specific Entity & Value data"""
     app = Flask(__name__)
     app.config['EntitiesValues'] = _entitiesValues
     app.config['DataSeeder'] = _dataseeder
 
     @app.route('/dataseed/add_entity', methods = ['POST'])
     def post_specific_entity():
+        """
+        Creates an Entity based on the provided request body
+        Required Values:
+        - entityCode : String
+        - entityType : String Enum from EntityOptions class in Databases, possible values are
+            - Slow Growth Fast Bust
+            - Volatile
+            - Fluctuating Decline
+            - Fluctuating Rise
+        - firstConstant : String that can resolve to a Decimal
+        - secondConstant : String that can resolve to a Decimal
+        - thirdConstant : String that can resolve to a Decimal
+        """
         entityCode = request.form['entityCode']
         entityType = request.form['entityType']
         firstConstant = request.form['firstConstant']
@@ -20,6 +34,12 @@ def DataSeederApi(_entitiesValues, _dataseeder):
 
     @app.route('/dataseed/add_value', methods = ['POST'])
     def post_add_value():
+        """
+        Adds a Value for a provided Entity using the Data Seeder's underlying random functions
+        Required Values:
+        - count : String that can resolve to an Integer
+        - entityCode : String
+        """
         count = int(request.form['count'])
         entityCode = request.form['entityCode']
 

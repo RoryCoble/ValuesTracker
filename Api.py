@@ -10,17 +10,29 @@ def ValuesTrackerApi(_entitiesValues, _userFunctions):
     
     @app.route('/api/get_existing_entities', methods=['GET'])
     def get_entities():
+        """Gets all of the currently existing Entities"""
         existingEntities = [i[0] for i in app.config['EntitiesValues'].get_existing_entities()]
         return jsonify(existingEntities)
         
     @app.route('/api/get_historical_values', methods=['GET'])
     def get_historical_values():
+        """
+        Gets all of the values for the given Entity up to the moment of calling based on Pythons datetime.min
+        Required Values:
+        - code : String
+        """
         code = request.args.get('code')
         historicalValues = [{'value': i[2], 'timestamp': i[1]} for i in app.config['EntitiesValues'].get_values(code, datetime.min)]
         return jsonify(historicalValues)
     
     @app.route('/api/get_new_values', methods=['GET'])
     def get_new_values():
+        """
+        Gets all of the values for the given Entity from the provided timestamp up to the moment of calling
+        Required Values:
+        - entityCode : code for the Entity whose values are being gotten
+        - timestamp : time for which Values occuring at or after are returned
+        """
         code = request.args.get('code')
         timestamp = request.args.get('timestamp')
         newValues = [{'value': i[2], 'timestamp': i[1]} for i in app.config['EntitiesValues'].get_values(code, timestamp)]
@@ -28,6 +40,13 @@ def ValuesTrackerApi(_entitiesValues, _userFunctions):
     
     @app.route('/api/create_user', methods=['POST'])
     def create_user():
+        """
+        Posts the provided information to create a new user
+        Required Values:
+        - userName : string
+        - password : string
+        - email : string
+        """
         userName = request.form['userName']
         password = request.form['password']
         email = request.form['email']

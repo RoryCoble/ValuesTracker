@@ -6,10 +6,12 @@ import math
 import time
 
 class DataSeeder:
+    """Simple application that provides 10 Entities and Values over time for those Entities"""
     def __init__(self, _entitiesValuesFunctions):
         self.entitiesValues = _entitiesValuesFunctions
 
     def generate_new_entity(self):
+        """Randomly creates the details of an Entity"""
         existingEntities = [i[0] for i in self.entitiesValues.get_existing_entities()]
         for _ in range(1000000):
             newEntity = ''.join(random.choice(string.ascii_letters) for i in range(5)).upper()
@@ -24,6 +26,15 @@ class DataSeeder:
         self.entitiesValues.add_entity(newEntity, entityType, constants[0], constants[1], constants[2])
 
     def generate_value(self, count, entityType, firstConstant, secondConstant, thirdConstant) -> float:
+        """
+        Randomly generates a value for the provided entity type and constants for a given count
+        Keyword arguments:
+        count -- value provided to these functions that acts as a traditional x for f(x)
+        entityType -- EntityOptions enum value that specifies the equation to use when generating the value
+        firstConstant -- float used in value calculation
+        secondConstant -- float used in value calculation
+        thirdConstant -- float used in value calculation
+        """
         if entityType == EntityOptions.SGFB.value:
             if random.randrange(0,10) <= 7:
                 return firstConstant*count + secondConstant*count + thirdConstant
@@ -37,6 +48,12 @@ class DataSeeder:
             return abs(firstConstant*count + secondConstant*count + thirdConstant*random.uniform(-1,1)) + 1
 
     def add_entity_value(self, count, code):
+        """
+        Adds a value to the database for a given Entity at the given count
+        Keyword arguments:
+        count -- value provided to these functions that acts as a traditional x for f(x)
+        code -- code for the Entity to which the Value is added
+        """
         entityDetails = self.entitiesValues.get_entity_details(code)[0]
         value = self.generate_value(count, 
                                     entityDetails[1], 
@@ -47,6 +64,7 @@ class DataSeeder:
         return value
 
     def run(self):
+        """Active generator of Values and sample Entities for the application"""
         for _ in range(0,10):
             self.generate_new_entity()
         entities = [i[0] for i in self.entitiesValues.get_existing_entities()]
