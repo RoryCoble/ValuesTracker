@@ -8,14 +8,14 @@ ValuesTracker is a demo website used to showcase my ability to write a postgres 
 ## Starting the Application
 
 Want to run my demo, and have docker desktop installed? Then execute the follow commands in the root of this repo using whatever shell you have configured.
-
-> docker compose up -d db \n
-> docker compose up -d api \n
-> docker compose up -d dataseeder_api \n
-> docker compose up -d web_backend \n
-> docker compose up -d web_frontend
-> docker compose up -d cypress
-> -- Once Cypress exits successfully --
-> docker compose up -d dataseeder
-
+'''
+docker compose up -d db 
+docker compose up -d api
+docker compose up -d dataseeder_api
+docker compose up -d web_backend 
+docker compose up -d web_frontend
+docker compose up -d cypress
+-- Once Cypress exits successfully --
+docker compose up -d dataseeder
+'''
 Then you can navigate a web browser to http://localhost:3000 and explore the application. Feel free to message me on LinkedIn with any questions or suggestions for improvements.
