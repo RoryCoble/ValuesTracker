@@ -11,7 +11,11 @@ class RegisterState(rx.State):
 
     @rx.event
     def handle_submit(self, form_data: dict):
-        """Handle the form submit."""
+        """
+        Handles the Registration form submittal and either creates a new 
+        User and redirects to the Login page or displays a banner error with the bubbled up
+        Error on registration
+        """
         try:
             registerResult = ApiRequests(self.api_url).create_user(
                 form_data["userName"], 
@@ -33,6 +37,7 @@ class RegisterState(rx.State):
             
 @rx.page(route="/register", on_load=RegisterState.on_load)
 def register_page():
+    """Creates the Register page"""
     return rx.center(
         rx.card(
             rx.form(

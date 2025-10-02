@@ -4,6 +4,11 @@ from packages.UserDatabase import UserFunctions
 
 @pytest.fixture(scope='session')
 def setup():
+    """
+    Clears any data in the associated tables
+    Renders the UserDatabase object for testing
+    then cleans up any generated data
+    """
     with DatabaseConnector('EntitiesAndValues', 'api', "localhost", 5431) as conn:
         _user = UserFunctions(conn)
         with _user.conn.cursor() as cur:

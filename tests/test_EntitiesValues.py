@@ -5,6 +5,11 @@ from decimal import Decimal
 
 @pytest.fixture(scope='session')
 def setup():
+    """
+    Clears any data in the associated tables
+    Renders the EntitiesValues object for testing
+    then cleans up any generated data
+    """
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
         _entitiesValues = EntitiesValuesFunctions(conn)
         with _entitiesValues.conn.cursor() as cur:

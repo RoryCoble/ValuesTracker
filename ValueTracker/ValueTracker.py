@@ -10,7 +10,7 @@ from datetime import datetime
 from rxconfig import config
 
 class State(rx.State):
-    """The app state."""
+    """The base State of the application"""
     api_url = ""
     user_name = ""
     entities = []
@@ -21,6 +21,7 @@ class State(rx.State):
     
     @rx.event
     async def on_load(self):
+        """Checks that the User is logged in, redirects if not, and loads the data necessary to produce the Entity graphs"""
         self.api_url = SettingsState.api_url
         settings = await self.get_state(pages.Login.LoginState)
         if not settings.logged_in:
@@ -34,6 +35,7 @@ class State(rx.State):
 
     @rx.event(background=True)
     async def start_stream(self):
+        """Background function to update the graphs on a 10 second interval"""
         async with self:
             self.stream = True
         while self.stream:
@@ -47,24 +49,34 @@ class State(rx.State):
             await asyncio.sleep(10)
 
     def stop_stream(self):
+        """Stops the background task so data isn't being sent to nothing"""
         self.stream = False
             
     @rx.event
     def navigate_home(self):
+        """Redirects the user to the Home page"""
         return rx.redirect("/")
 
     @rx.event
     def navigate_entities(self):
+        """Redirects the user to the Manage Entities page"""
         return rx.redirect("/entities")
 
     @rx.event
     async def logoff(self):
+        """Removes the logged in state from the User and redirects them to the Login page"""
         settings = await self.get_state(pages.Login.LoginState)
         settings.logged_in = False
         self.stream = False
         return rx.redirect("/login")
 
 def build_graph(entity, index):
+    """
+    Creates a line graph for the provided Entity
+    Keyword arguments:
+    entity -- the Entity to be graphed
+    index -- counter variable used to access the data stored in self.collected_graph_data
+    """
     return rx.card(
         rx.vstack(
             rx.heading(
@@ -107,7 +119,7 @@ def build_graph(entity, index):
       
 @rx.page(on_load=State.on_load)
 def index():
-    # Welcome Page (Index)
+    """Defines the main page of the application including the navigation menu and the Entity charts"""
     return rx.fragment(
             rx.hstack(
                 rx.drawer.root(
@@ -203,6 +215,7 @@ def index():
             ),
         )
 
+# Application setup and connection of the various pages
 app = rx.App()
 app.add_page(index)
 app.add_page(pages.Login.login_page, title = 'Login')

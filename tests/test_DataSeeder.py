@@ -5,6 +5,11 @@ from datetime import datetime, timedelta
 
 @pytest.fixture(scope='session')
 def setup():
+    """
+    Clears any existing data in the tables related to testing, renders the Dataseeder object for testing
+    and the EntitiesValues object in order to compare that the values created match expectations
+    then removes any generated data
+    """
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
         _entitiesValues = EntitiesValuesFunctions(conn)
         _dataSeeder = DataSeeder(_entitiesValues)

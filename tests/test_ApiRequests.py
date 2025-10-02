@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 
 @pytest.fixture(scope='session')
 def setup():
+    """Creates the expected test data, renders the API object for testing, then cleans up any added data after the tests have run"""
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
         _entitiesValues = EntitiesValuesFunctions(conn)
         with _entitiesValues.conn.cursor() as cur:

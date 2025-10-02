@@ -46,6 +46,9 @@ class ApiRequests:
     def login_user(self, userName, password):
         """
         Post to confirm that the provided user name and password
+        Keyword arguments:
+        userName -- string
+        password -- string
         """
         return rq.post(f"{self.basePath}/api/login_user", data = {
             "userName" : userName,
@@ -53,13 +56,29 @@ class ApiRequests:
         })
 
     def connect_user_entity(self, userName, entityCode):
+        """
+        Post to assign the provided Entity to the provided User
+        Keyword arguments:
+        userName -- string
+        entityCode -- string
+        """
         return rq.post(f"{self.basePath}/api/connect_user_entity", data = {
             "userName"   : userName,
             "entityCode" : entityCode
         })
 
     def get_entities_assigned_to_user(self, userName):
+        """
+        Get the Entities assigned to the provided User
+        Keyword arguments:
+        userName -- string
+        """
         return rq.get(f"{self.basePath}/api/get_entities_assigned_to_user?userName={userName}")
 
     def get_entity_details(self, code):
+        """
+        Get the Details of the provided Entity
+        Keyword arguments:
+        entityCode -- string
+        """
         return rq.get(f"{self.basePath}/api/get_entity_details?code={code}")

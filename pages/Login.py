@@ -3,6 +3,7 @@ from packages.ApiRequests import ApiRequests
 from packages.UiSettings import SettingsState
 
 class LoginState(rx.State):
+    """Login page and general User login state"""
     api_url = ""
     logged_in = False
     user_name = ""
@@ -13,7 +14,10 @@ class LoginState(rx.State):
     
     @rx.event
     def handle_submit(self, form_data: dict):
-        """Handle the form submit."""
+        """
+        Takes in the Login data and either lets the User into the application
+        or displays a banner error indicating the Login failed
+        """
         loginResult = ApiRequests(self.api_url).login_user(
             form_data["userName"], 
             form_data["password"]
@@ -36,6 +40,7 @@ class LoginState(rx.State):
             
 @rx.page(route="/login", on_load=LoginState.on_load)
 def login_page():
+    """Creates the Login page"""
     return rx.center(
         rx.card(
             rx.form(

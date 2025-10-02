@@ -4,6 +4,7 @@ from packages.ApiRequests import ApiRequests
 from packages.UiSettings import SettingsState
 
 class EntityDetails(rx.Model, table=True):
+    """Data model used to translate the retrieved data to Reflex's table component"""
     code: str
     type: str
     firstConstant: str
@@ -11,6 +12,7 @@ class EntityDetails(rx.Model, table=True):
     thirdConstant: str
 
 class EntitiesState(rx.State):
+    """State specific to the Manage Entities page"""
     api_url = ""
     entities = []
     available_entities = []
@@ -19,6 +21,7 @@ class EntitiesState(rx.State):
 
     @rx.event
     async def on_load(self):
+        """Confirms that the User is logged in or redirects to the login page then gathers the data necessary to populate the page"""
         self.api_url = SettingsState.api_url
         settings = await self.get_state(pages.Login.LoginState)
         self.user_name = settings.user_name
@@ -33,26 +36,30 @@ class EntitiesState(rx.State):
 
     @rx.event
     def navigate_home(self):
+        """Redirects the User to the Main page"""
         return rx.redirect("/")
 
     @rx.event
     def navigate_entities(self):
+        """Redirects the User to the Manage Entities page"""
         return rx.redirect("/entities")
 
     @rx.event
     def handle_submit(self, form_data):
+        """Takes in the Add Entity information, calls the appropriate api endpoint, then reloads the page"""
         if form_data["entity"] in self.available_entities:
             ApiRequests(self.api_url).connect_user_entity(self.user_name, form_data["entity"])
         return rx.redirect("/entities")
 
     @rx.event
     async def logoff(self):
+        """Removes the User's logged in state and redirects to the Login page"""
         settings = await self.get_state(pages.Login.LoginState)
         settings.logged_in = False
         return rx.redirect("/login")
         
 def show_record(entitiesDetails: EntityDetails):
-    """Show a customer in a table row."""
+    """Shows the Entity details in a table row."""
     return rx.table.row(
         rx.table.cell(entitiesDetails[0]),
         rx.table.cell(entitiesDetails[1]),
@@ -66,6 +73,10 @@ def show_record(entitiesDetails: EntityDetails):
             
 @rx.page(route="/entities", on_load=EntitiesState.on_load)
 def entities_page():
+    """
+    Creates the Manage Entities page including the navigation menu, the assigned Entity details table, 
+    and the form to add additional Entities
+    """
     return rx.fragment(
                 rx.hstack(
                     rx.drawer.root(

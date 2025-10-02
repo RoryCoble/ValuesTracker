@@ -7,6 +7,11 @@ from decimal import Decimal
 
 @pytest.fixture(scope='session')
 def setup():
+    """
+    Clears any existing data in the tables related to testing, renders the DataseederApi object for testing
+    and the EntitiesValues object in order to compare that the values created match expectations
+    then removes any generated data
+    """
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
         _entitiesValues = EntitiesValuesFunctions(conn)
         with _entitiesValues.conn.cursor() as cur:
