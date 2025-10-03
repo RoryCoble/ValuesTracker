@@ -1,6 +1,8 @@
 # ValuesTracker
 ---
+
 [Rory Coble](https://www.linkedin.com/in/rory-coble-572314107/)
+
 ---
 
 ValuesTracker is a demo website used to showcase my ability to write a postgres & Python web application with automated testing built into each component. The UI utilizes the Reflex framework and the API relies on Flask. All of it is hosted in cicd-esq docker containers that render shippable software for some form of cloud deployment. Finally the whole application has a set of end to end tests written in Cypress. On it a user can select an Entity represented by some five letter code and watch its value go up and down in realtime.
