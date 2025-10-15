@@ -1,5 +1,6 @@
-import psycopg2
+'''General functions for the non-User database interactions'''
 from enum import Enum
+import psycopg2
 
 class DatabaseConnector:
     """Generalized Database connection wrapper class"""
@@ -8,7 +9,8 @@ class DatabaseConnector:
         self.db_user = db_user
         self.host = host
         self.port = port
-        
+        self.conn = object
+
     def __enter__(self):
         self.conn = psycopg2.connect(user = self.db_user,
                                      database = self.db_name,
@@ -17,7 +19,7 @@ class DatabaseConnector:
                                      port = self.port)
         return self.conn
 
-    def __exit__(self, type, value, tb):
+    def __exit__(self, fixture_type, value, tb):
         self.conn.close()
 
 class EntityOptions(Enum):
@@ -29,8 +31,8 @@ class EntityOptions(Enum):
 
 class EntitiesValuesFunctions:
     """Custom functions allowing for Entities & Values data manipulation"""
-    def __init__(self, databaseConnection):
-        self.conn = databaseConnection
+    def __init__(self, database_connection):
+        self.conn = database_connection
 
     def get_existing_entities(self):
         """Retrieves all of the currently available Entities"""
@@ -42,29 +44,30 @@ class EntitiesValuesFunctions:
                     entities = cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
-            return entities
 
-    def add_entity(self, code, option, firstConstant, secondConstant, thirdConstant):
+        return entities
+
+    def add_entity(self, code, option, first_constant, second_constant, third_constant):
         """
         Creates a new Entity in the database
         Keyword arguments:
         code -- the desired Entity Code string
         option -- value from the EntityOptions enum
-        firstConstant -- decimal used during calculation of values generated for this entity
-        secondConstant -- decimal used during calculation of values generated for this entity
-        thirdConstant -- decimal used during calculation of values generated for this entity
+        first_constant -- decimal used during calculation of values generated for this entity
+        second_constant -- decimal used during calculation of values generated for this entity
+        third_constant -- decimal used during calculation of values generated for this entity
         """
         success = False
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
-                    cur.callproc('add_entity', (code, option, firstConstant, secondConstant, thirdConstant))
+                    cur.callproc('add_entity',
+                                 (code, option, first_constant, second_constant, third_constant))
                     success = cur.fetchall()[0][0]
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
-            return success
+
+        return success
 
     def add_entity_value(self, code, timestamp, value):
         """
@@ -82,8 +85,8 @@ class EntitiesValuesFunctions:
                     success = cur.fetchall()[0][0]
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
-            return success
+
+        return success
 
     def get_entity_details(self, code):
         """
@@ -91,16 +94,16 @@ class EntitiesValuesFunctions:
         Keyword arguments:
         code -- the Entity whose details will be returned
         """
-        entityDetails = []
+        entity_details = []
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
                     cur.callproc('get_entity_details', (code,))
-                    entityDetails = cur.fetchall()
+                    entity_details = cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
-            return entityDetails
+
+        return entity_details
 
     def get_values(self, code, timestamp):
         """
@@ -117,5 +120,5 @@ class EntitiesValuesFunctions:
                     values = cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
-            return values
+
+        return values

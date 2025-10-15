@@ -1,7 +1,7 @@
 import reflex as rx
 import pages.Login
 from packages.ApiRequests import ApiRequests
-from packages.UiSettings import SettingsState
+from packages.ui_settings import SettingsState
 
 class EntityDetails(rx.Model, table=True):
     """Data model used to translate the retrieved data to Reflex's table component"""

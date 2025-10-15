@@ -1,6 +1,6 @@
 import reflex as rx
 from packages.ApiRequests import ApiRequests
-from packages.UiSettings import SettingsState
+from packages.ui_settings import SettingsState
 
 class LoginState(rx.State):
     """Login page and general User login state"""

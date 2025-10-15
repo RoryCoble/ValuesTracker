@@ -1,0 +1,60 @@
+'''Tests the Dataseeder Api endpoints'''
+from datetime import datetime, timedelta
+from decimal import Decimal
+import pytest
+from packages.databases import DatabaseConnector, EntitiesValuesFunctions
+from DataSeeder import DataSeeder
+import dataseeder_api
+
+@pytest.fixture(scope='session', name='setup')
+def fixture_setup():
+    """
+    Clears any existing data in the tables related to testing, renders the DataseederApi 
+    object for testing and the EntitiesValues object in order to compare that the values
+    created match expectations then removes any generated data
+    """
+    with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
+        _entities_values = EntitiesValuesFunctions(conn)
+        with _entities_values.conn.cursor() as cur:
+            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
+            conn.commit()
+
+        _dataseeder = DataSeeder(_entities_values)
+        app = dataseeder_api.dataseeder_api(_entities_values, _dataseeder)
+        with app.test_client() as test_client:
+            with app.app_context():
+                yield (test_client, _entities_values)
+
+        with _entities_values.conn.cursor() as cur:
+            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
+            conn.commit()
+
+def test_add_entity(setup):
+    '''Tests the Add Entity endpoint'''
+    test_client, _entities_values = setup
+    response = test_client.post('/dataseed/add_entity', data = {
+        'entityCode'     : 'AAAAA',
+        'entityType'     : 'Volatile',
+        'firstConstant'  : '5.2',
+        'secondConstant' : '3.4',
+        'thirdConstant'  : '6.9',
+    }).json
+
+    assert response is True
+    # pylint: disable=line-too-long
+    assert ('AAAAA', 'Volatile', Decimal('5.2'), Decimal('3.4'), Decimal('6.9')) == _entities_values.get_entity_details('AAAAA')[0]
+
+def test_add_value(setup):
+    '''Tests the Add Value endpoint'''
+    test_client, _entities_values = setup
+    _ = test_client.post('/dataseed/add_value', data = {
+        'count'      : '1',
+        'entityCode' : 'AAAAA',
+    }).json
+
+    values = _entities_values.get_values('AAAAA', datetime.now() - timedelta(days=1))[0]
+    assert values[0] == 'AAAAA'
+    assert values[1].year == datetime.now().year
+    assert values[1].month == datetime.now().month
+    assert values[1].day == datetime.now().day
+    assert values[2] != 0

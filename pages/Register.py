@@ -1,6 +1,6 @@
 import reflex as rx
 from packages.ApiRequests import ApiRequests
-from packages.UiSettings import SettingsState
+from packages.ui_settings import SettingsState
 
 class RegisterState(rx.State):
     api_url = ""

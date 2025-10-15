@@ -1,11 +1,11 @@
-from packages.Databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions
 from datetime import datetime
 import random
 import string
 import math
 import time
+from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions
 
-class DataSeeder:
+class Dataseeder:
     """Simple application that provides 10 Entities and Values over time for those Entities"""
     def __init__(self, _entitiesValuesFunctions):
         self.entitiesValues = _entitiesValuesFunctions
@@ -17,35 +17,48 @@ class DataSeeder:
             newEntity = ''.join(random.choice(string.ascii_letters) for i in range(5)).upper()
             if newEntity not in existingEntities:
                 break
-        
+
         entityType = random.choice(list(EntityOptions)).value
         constants = []
         for _ in range(0,3):
             constants.append(float(random.randrange(0, 10000))/100)
-            
-        self.entitiesValues.add_entity(newEntity, entityType, constants[0], constants[1], constants[2])
 
-    def generate_value(self, count, entityType, firstConstant, secondConstant, thirdConstant) -> float:
+        self.entitiesValues.add_entity(newEntity,
+                                       entityType,
+                                       constants[0],
+                                       constants[1],
+                                       constants[2])
+
+    def generate_value(self,
+                       count,
+                       entity_type, firstConstant, secondConstant, thirdConstant) -> float:
         """
         Randomly generates a value for the provided entity type and constants for a given count
         Keyword arguments:
         count -- value provided to these functions that acts as a traditional x for f(x)
-        entityType -- EntityOptions enum value that specifies the equation to use when generating the value
+        entityType -- EntityOptions enum value that specifies the equation to use 
+                        when generating the value
         firstConstant -- float used in value calculation
         secondConstant -- float used in value calculation
         thirdConstant -- float used in value calculation
         """
-        if entityType == EntityOptions.SGFB.value:
-            if random.randrange(0,10) <= 7:
-                return firstConstant*count + secondConstant*count + thirdConstant
-            else:
-                return (firstConstant*count)**-2 + (secondConstant*count)**-3 + (thirdConstant*count)**-4 + 1
-        elif entityType == EntityOptions.V.value:
-            return abs(firstConstant*math.sin(count)) + secondConstant*random.uniform(-1,1) + thirdConstant*random.randrange(0,2) + 1
-        elif entityType == EntityOptions.FD.value:
-            return firstConstant*secondConstant/(count + 1) + thirdConstant*random.randrange(0,2) + 1
-        elif entityType == EntityOptions.FR.value:    
-            return abs(firstConstant*count + secondConstant*count + thirdConstant*random.uniform(-1,1)) + 1
+        match entity_type:
+            case EntityOptions.SGFB.value:
+                common_value = firstConstant*count + secondConstant*count + thirdConstant
+                uncommon_value = (firstConstant*count)**-2 + (secondConstant*count)**-3 \
+                    + (thirdConstant*count)**-4 + 1
+                return common_value if random.randrange(0,10) <= 7 else uncommon_value
+            case EntityOptions.V.value:
+                return abs(firstConstant*math.sin(count)) + secondConstant*random.uniform(-1,1) \
+                + thirdConstant*random.randrange(0,2) + 1
+            case EntityOptions.FD.value:
+                return firstConstant*secondConstant/(count + 1) \
+                + thirdConstant*random.randrange(0,2) + 1
+            case EntityOptions.FR.value:
+                return abs(firstConstant*count + secondConstant*count \
+                           + thirdConstant*random.uniform(-1,1)) + 1
+            case _:
+                return 0
 
     def add_entity_value(self, count, code):
         """
@@ -55,10 +68,10 @@ class DataSeeder:
         code -- code for the Entity to which the Value is added
         """
         entityDetails = self.entitiesValues.get_entity_details(code)[0]
-        value = self.generate_value(count, 
-                                    entityDetails[1], 
-                                    float(entityDetails[2]), 
-                                    float(entityDetails[3]), 
+        value = self.generate_value(count,
+                                    entityDetails[1],
+                                    float(entityDetails[2]),
+                                    float(entityDetails[3]),
                                     float(entityDetails[4]))
         self.entitiesValues.add_entity_value(code, datetime.now(), value)
         return value
@@ -78,5 +91,5 @@ class DataSeeder:
 if __name__ == "__main__":
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', 'db', 5432) as conn:
         _entitiesValues = EntitiesValuesFunctions(conn)
-        _dataSeeder = DataSeeder(_entitiesValues)
-        _dataSeeder.run()
+        _dataseeder = Dataseeder(_entitiesValues)
+        _dataseeder.run()
