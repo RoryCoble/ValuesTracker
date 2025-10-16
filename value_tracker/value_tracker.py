@@ -1,16 +1,16 @@
-import reflex as rx
-import pages.Login
-import pages.Register
-import pages.Entities
-from packages.ApiRequests import ApiRequests
-from packages.UiSettings import SettingsState
+'''Main page of Values Tracker'''
 import asyncio
 from datetime import datetime
-
-from rxconfig import config
+import reflex as rx
+import pages.login
+import pages.register
+import pages.entities
+from packages.api_requests import ApiRequests
+from packages.ui_settings import SettingsState
 
 class State(rx.State):
     """The base State of the application"""
+    # pylint: disable=inherit-non-class
     api_url = ""
     user_name = ""
     entities = []
@@ -18,21 +18,25 @@ class State(rx.State):
     collected_graph_data = []
     single_graph_data = []
     stream = False
-    
+
     @rx.event
     async def on_load(self):
-        """Checks that the User is logged in, redirects if not, and loads the data necessary to produce the Entity graphs"""
+        """Checks that the User is logged in, redirects if not, and loads
+        the data necessary to produce the Entity graphs"""
         self.api_url = SettingsState.api_url
-        settings = await self.get_state(pages.Login.LoginState)
+        settings = await self.get_state(pages.login.LoginState)
         if not settings.logged_in:
             return rx.redirect("/login")
         self.user_name = settings.user_name
-        self.entities = ApiRequests(self.api_url).get_entities_assigned_to_user(self.user_name).json()
+        self.entities = ApiRequests(self.api_url).get_entities_assigned_to_user(
+            self.user_name).json()
         self.collected_graph_data = []
         for entity in self.entities:
-            self.collected_graph_data.append(ApiRequests(self.api_url).get_historical_values(entity).json())
+            self.collected_graph_data.append(ApiRequests(self.api_url).get_historical_values(
+                entity).json())
         self.last_timestamp = datetime.now()
 
+    # pylint: disable=not-callable
     @rx.event(background=True)
     async def start_stream(self):
         """Background function to update the graphs on a 10 second interval"""
@@ -42,7 +46,8 @@ class State(rx.State):
             async with self:
                 i=0
                 for entity in self.entities:
-                    new_data = ApiRequests(self.api_url).get_new_values(entity, self.last_timestamp).json()
+                    new_data = ApiRequests(self.api_url).get_new_values(
+                        entity, self.last_timestamp).json()
                     self.collected_graph_data[i].extend(new_data)
                     i+=1
                 self.last_timestamp = datetime.now()
@@ -51,7 +56,7 @@ class State(rx.State):
     def stop_stream(self):
         """Stops the background task so data isn't being sent to nothing"""
         self.stream = False
-            
+
     @rx.event
     def navigate_home(self):
         """Redirects the user to the Home page"""
@@ -70,12 +75,12 @@ class State(rx.State):
         self.stream = False
         return rx.redirect("/login")
 
-def build_graph(entity, index):
+def build_graph(entity, i):
     """
     Creates a line graph for the provided Entity
     Keyword arguments:
     entity -- the Entity to be graphed
-    index -- counter variable used to access the data stored in self.collected_graph_data
+    i -- counter variable used to access the data stored in self.collected_graph_data
     """
     return rx.card(
         rx.vstack(
@@ -98,7 +103,7 @@ def build_graph(entity, index):
                 rx.recharts.x_axis(data_key="timestamp"),
                 rx.recharts.y_axis(),
                 rx.recharts.graphing_tooltip(),
-                data=State.collected_graph_data[index],
+                data=State.collected_graph_data[i],
                 height=200,
                 width='100%',
                 margin={
@@ -116,10 +121,12 @@ def build_graph(entity, index):
             "width":"60vw"
         }
     )
-      
+
+# pylint: disable=not-callable
 @rx.page(on_load=State.on_load)
 def index():
-    """Defines the main page of the application including the navigation menu and the Entity charts"""
+    """Defines the main page of the application including the 
+    navigation menu and the Entity charts"""
     return rx.fragment(
             rx.hstack(
                 rx.drawer.root(
@@ -216,8 +223,9 @@ def index():
         )
 
 # Application setup and connection of the various pages
+# pylint: disable=not-callable
 app = rx.App()
 app.add_page(index)
-app.add_page(pages.Login.login_page, title = 'Login')
-app.add_page(pages.Register.register_page, title = 'Register')
-app.add_page(pages.Entities.entities_page, title = 'Manage Entities')
+app.add_page(pages.login.login_page, title = 'Login')
+app.add_page(pages.register.register_page, title = 'Register')
+app.add_page(pages.entities.entities_page, title = 'Manage Entities')

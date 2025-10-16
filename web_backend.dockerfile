@@ -6,7 +6,7 @@ COPY packages/api_requests.py packages/api_requests.py
 COPY packages/databases.py packages/databases.py
 COPY packages/user_database.py packages/user_database.py
 COPY tests/__init__.py tests/__init__.py
-COPY tests/test_ApiRequests.py tests/test_ApiRequests.py
+COPY tests/test_api_requests.py tests/test_api_requests.py
 COPY ui_localtest.txt .
 RUN pip install -r ui_localtest.txt
 RUN pytest -v tests/

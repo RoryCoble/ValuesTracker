@@ -31,8 +31,8 @@ def test_get_entities(setup):
 
 def test_get_entity_details(setup):
     '''Tests the Get Entity Details function'''
-    # pylint: disable=line-too-long
-    assert ('AAAAA', EntityOptions.SGFB.value, Decimal('0.2'), Decimal('0.1'), Decimal('0.5')) == setup.get_entity_details('AAAAA')[0]
+    assert ('AAAAA', EntityOptions.SGFB.value, Decimal('0.2'), Decimal('0.1'), Decimal('0.5')) \
+    == setup.get_entity_details('AAAAA')[0]
 
 def test_add_entity_value(setup):
     '''Tests the Add Entity Value function'''

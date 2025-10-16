@@ -1,3 +1,4 @@
+'''Dataseeder class'''
 from datetime import datetime
 import random
 import string
@@ -7,56 +8,56 @@ from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesF
 
 class Dataseeder:
     """Simple application that provides 10 Entities and Values over time for those Entities"""
-    def __init__(self, _entitiesValuesFunctions):
-        self.entitiesValues = _entitiesValuesFunctions
+    def __init__(self, _entities_values_functions):
+        self.entities_values = _entities_values_functions
 
     def generate_new_entity(self):
         """Randomly creates the details of an Entity"""
-        existingEntities = [i[0] for i in self.entitiesValues.get_existing_entities()]
+        existing_entities = [i[0] for i in self.entities_values.get_existing_entities()]
         for _ in range(1000000):
-            newEntity = ''.join(random.choice(string.ascii_letters) for i in range(5)).upper()
-            if newEntity not in existingEntities:
+            new_entity = ''.join(random.choice(string.ascii_letters) for i in range(5)).upper()
+            if new_entity not in existing_entities:
                 break
 
-        entityType = random.choice(list(EntityOptions)).value
+        entity_type = random.choice(list(EntityOptions)).value
         constants = []
         for _ in range(0,3):
             constants.append(float(random.randrange(0, 10000))/100)
 
-        self.entitiesValues.add_entity(newEntity,
-                                       entityType,
-                                       constants[0],
-                                       constants[1],
-                                       constants[2])
+        self.entities_values.add_entity(new_entity,
+                                        entity_type,
+                                        constants[0],
+                                        constants[1],
+                                        constants[2])
 
     def generate_value(self,
                        count,
-                       entity_type, firstConstant, secondConstant, thirdConstant) -> float:
+                       entity_type, first_constant, second_constant, third_constant) -> float:
         """
         Randomly generates a value for the provided entity type and constants for a given count
         Keyword arguments:
         count -- value provided to these functions that acts as a traditional x for f(x)
-        entityType -- EntityOptions enum value that specifies the equation to use 
+        entity_type -- EntityOptions enum value that specifies the equation to use 
                         when generating the value
-        firstConstant -- float used in value calculation
-        secondConstant -- float used in value calculation
-        thirdConstant -- float used in value calculation
+        first_constant -- float used in value calculation
+        second_constant -- float used in value calculation
+        third_constant -- float used in value calculation
         """
         match entity_type:
             case EntityOptions.SGFB.value:
-                common_value = firstConstant*count + secondConstant*count + thirdConstant
-                uncommon_value = (firstConstant*count)**-2 + (secondConstant*count)**-3 \
-                    + (thirdConstant*count)**-4 + 1
+                common_value = first_constant*count + second_constant*count + third_constant
+                uncommon_value = (first_constant*count)**-2 + (second_constant*count)**-3 \
+                    + (third_constant*count)**-4 + 1
                 return common_value if random.randrange(0,10) <= 7 else uncommon_value
             case EntityOptions.V.value:
-                return abs(firstConstant*math.sin(count)) + secondConstant*random.uniform(-1,1) \
-                + thirdConstant*random.randrange(0,2) + 1
+                return abs(first_constant*math.sin(count)) + second_constant*random.uniform(-1,1) \
+                + third_constant*random.randrange(0,2) + 1
             case EntityOptions.FD.value:
-                return firstConstant*secondConstant/(count + 1) \
-                + thirdConstant*random.randrange(0,2) + 1
+                return first_constant*second_constant/(count + 1) \
+                + third_constant*random.randrange(0,2) + 1
             case EntityOptions.FR.value:
-                return abs(firstConstant*count + secondConstant*count \
-                           + thirdConstant*random.uniform(-1,1)) + 1
+                return abs(first_constant*count + second_constant*count \
+                           + third_constant*random.uniform(-1,1)) + 1
             case _:
                 return 0
 
@@ -67,20 +68,20 @@ class Dataseeder:
         count -- value provided to these functions that acts as a traditional x for f(x)
         code -- code for the Entity to which the Value is added
         """
-        entityDetails = self.entitiesValues.get_entity_details(code)[0]
+        entity_details = self.entities_values.get_entity_details(code)[0]
         value = self.generate_value(count,
-                                    entityDetails[1],
-                                    float(entityDetails[2]),
-                                    float(entityDetails[3]),
-                                    float(entityDetails[4]))
-        self.entitiesValues.add_entity_value(code, datetime.now(), value)
+                                    entity_details[1],
+                                    float(entity_details[2]),
+                                    float(entity_details[3]),
+                                    float(entity_details[4]))
+        self.entities_values.add_entity_value(code, datetime.now(), value)
         return value
 
     def run(self):
         """Active generator of Values and sample Entities for the application"""
         for _ in range(0,10):
             self.generate_new_entity()
-        entities = [i[0] for i in self.entitiesValues.get_existing_entities()]
+        entities = [i[0] for i in self.entities_values.get_existing_entities()]
         i=0
         while True:
             i+=1
@@ -90,6 +91,6 @@ class Dataseeder:
 
 if __name__ == "__main__":
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', 'db', 5432) as conn:
-        _entitiesValues = EntitiesValuesFunctions(conn)
-        _dataseeder = Dataseeder(_entitiesValues)
+        _entities_values = EntitiesValuesFunctions(conn)
+        _dataseeder = Dataseeder(_entities_values)
         _dataseeder.run()

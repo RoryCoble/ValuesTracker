@@ -1,34 +1,40 @@
+'''Manage Entities page'''
 import reflex as rx
-import pages.Login
-from packages.ApiRequests import ApiRequests
+import pages.login
+from packages.api_requests import ApiRequests
 from packages.ui_settings import SettingsState
 
 class EntityDetails(rx.Model, table=True):
     """Data model used to translate the retrieved data to Reflex's table component"""
+    # pylint: disable=inherit-non-class
     code: str
     type: str
-    firstConstant: str
-    secondConstant: str
-    thirdConstant: str
+    first_constant: str
+    second_constant: str
+    third_constant: str
 
 class EntitiesState(rx.State):
     """State specific to the Manage Entities page"""
+    # pylint: disable=inherit-non-class
     api_url = ""
     entities = []
     available_entities = []
-    entitiesDetails: list[EntityDetails] = []
+    entities_details: list[EntityDetails] = []
     user_name = ""
 
     @rx.event
     async def on_load(self):
-        """Confirms that the User is logged in or redirects to the login page then gathers the data necessary to populate the page"""
+        """Confirms that the User is logged in or redirects to the login 
+        page then gathers the data necessary to populate the page"""
         self.api_url = SettingsState.api_url
         settings = await self.get_state(pages.Login.LoginState)
         self.user_name = settings.user_name
-        self.entities = ApiRequests(self.api_url).get_entities_assigned_to_user(self.user_name).json()
-        self.entitiesDetails = []
+        self.entities = ApiRequests(self.api_url).get_entities_assigned_to_user(
+            self.user_name).json()
+        self.entities_details = []
         for entity in self.entities:
-            self.entitiesDetails.append(ApiRequests(self.api_url).get_entity_details(entity).json()[0])
+            self.entities_details.append(ApiRequests(self.api_url).get_entity_details(
+                entity).json()[0])
         self.available_entities = ApiRequests(self.api_url).get_entities().json()
         self.available_entities.append("Select Entity")
         if not settings.logged_in:
@@ -46,7 +52,8 @@ class EntitiesState(rx.State):
 
     @rx.event
     def handle_submit(self, form_data):
-        """Takes in the Add Entity information, calls the appropriate api endpoint, then reloads the page"""
+        """Takes in the Add Entity information, calls the appropriate api endpoint, 
+        then reloads the page"""
         if form_data["entity"] in self.available_entities:
             ApiRequests(self.api_url).connect_user_entity(self.user_name, form_data["entity"])
         return rx.redirect("/entities")
@@ -57,25 +64,27 @@ class EntitiesState(rx.State):
         settings = await self.get_state(pages.Login.LoginState)
         settings.logged_in = False
         return rx.redirect("/login")
-        
-def show_record(entitiesDetails: EntityDetails):
+
+def show_record(entities_details: EntityDetails):
     """Shows the Entity details in a table row."""
     return rx.table.row(
-        rx.table.cell(entitiesDetails[0]),
-        rx.table.cell(entitiesDetails[1]),
-        rx.table.cell(entitiesDetails[2]),
-        rx.table.cell(entitiesDetails[3]),
-        rx.table.cell(entitiesDetails[4]),
+        rx.table.cell(entities_details[0]),
+        rx.table.cell(entities_details[1]),
+        rx.table.cell(entities_details[2]),
+        rx.table.cell(entities_details[3]),
+        rx.table.cell(entities_details[4]),
         custom_attrs = {
             "data-testid" : "entitiesTableRow",
         },
     )
-            
+
+# pylint: disable=not-callable
 @rx.page(route="/entities", on_load=EntitiesState.on_load)
 def entities_page():
     """
-    Creates the Manage Entities page including the navigation menu, the assigned Entity details table, 
-    and the form to add additional Entities
+    Creates the Manage Entities page including the navigation menu, 
+    the assigned Entity details table, and the form to add additional
+    Entities
     """
     return rx.fragment(
                 rx.hstack(
@@ -187,7 +196,7 @@ def entities_page():
                                 ),
                                 rx.table.body(
                                     rx.foreach(
-                                        EntitiesState.entitiesDetails, show_record
+                                        EntitiesState.entities_details, show_record
                                     ),
                                     custom_attrs = {
                                         "data-testid" : "entitiesTableBody",

@@ -1,33 +1,36 @@
+'''Login page'''
 import reflex as rx
-from packages.ApiRequests import ApiRequests
+from packages.api_requests import ApiRequests
 from packages.ui_settings import SettingsState
 
 class LoginState(rx.State):
     """Login page and general User login state"""
+    # pylint: disable=inherit-non-class
     api_url = ""
     logged_in = False
     user_name = ""
 
     @rx.event
     async def on_load(self):
+        '''On load gets the base api_url'''
         self.api_url = SettingsState.api_url
-    
+
     @rx.event
     def handle_submit(self, form_data: dict):
         """
         Takes in the Login data and either lets the User into the application
         or displays a banner error indicating the Login failed
         """
-        loginResult = ApiRequests(self.api_url).login_user(
-            form_data["userName"], 
+        login_result = ApiRequests(self.api_url).login_user(
+            form_data["userName"],
             form_data["password"]
         ).json()
-        if loginResult == True:
+        if login_result is True:
             self.logged_in = True
             self.user_name = form_data["userName"]
             return rx.redirect("/")
-        else:
-            return rx.toast(
+
+        return rx.toast(
                 "Login Unsuccessful",
                 position = "top-center",
                 style = {
@@ -37,7 +40,8 @@ class LoginState(rx.State):
                     "border-radius": "0.53m",
                 }
             )
-            
+
+# pylint: disable=not-callable)
 @rx.page(route="/login", on_load=LoginState.on_load)
 def login_page():
     """Creates the Login page"""
@@ -57,7 +61,7 @@ def login_page():
                         custom_attrs = {
                             "data-testid" : "usernameInput",
                         },
-                    ), 
+                    ),
                     rx.input(
                         placeholder="Password",
                         name="password",
@@ -85,12 +89,12 @@ def login_page():
                             width="100%",
                         ),
                     ),
-                    width="100%", 
+                    width="100%",
                     justify="center",
-                ), 
-                on_submit=LoginState.handle_submit, 
+                ),
+                on_submit=LoginState.handle_submit,
                 reset_on_submit=True,
-            ), 
+            ),
         ),
         padding_top="30vh",
     )

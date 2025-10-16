@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 import pytest
 from packages.databases import DatabaseConnector, EntitiesValuesFunctions
-from DataSeeder import DataSeeder
+from dataseeder import Dataseeder
 import dataseeder_api
 
 @pytest.fixture(scope='session', name='setup')
@@ -19,7 +19,7 @@ def fixture_setup():
             cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
             conn.commit()
 
-        _dataseeder = DataSeeder(_entities_values)
+        _dataseeder = Dataseeder(_entities_values)
         app = dataseeder_api.dataseeder_api(_entities_values, _dataseeder)
         with app.test_client() as test_client:
             with app.app_context():
@@ -41,8 +41,9 @@ def test_add_entity(setup):
     }).json
 
     assert response is True
-    # pylint: disable=line-too-long
-    assert ('AAAAA', 'Volatile', Decimal('5.2'), Decimal('3.4'), Decimal('6.9')) == _entities_values.get_entity_details('AAAAA')[0]
+
+    assert ('AAAAA', 'Volatile', Decimal('5.2'), Decimal('3.4'), Decimal('6.9')) \
+    == _entities_values.get_entity_details('AAAAA')[0]
 
 def test_add_value(setup):
     '''Tests the Add Value endpoint'''

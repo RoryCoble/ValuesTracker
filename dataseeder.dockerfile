@@ -4,7 +4,7 @@ RUN apt-get update
 COPY packages/__init__.py packages/__init__.py
 COPY packages/databases.py packages/databases.py
 COPY tests/__init__.py tests/__init__.py
-COPY tests/test_DataSeeder.py tests/test_DataSeeder.py
+COPY tests/test_dataseeder.py tests/test_dataseeder.py
 COPY tests/test_entities_values.py tests/test_entities_values.py
 COPY dataseeder_localtest.txt .
 COPY dataseeder.py .

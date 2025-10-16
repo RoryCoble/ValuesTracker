@@ -1,12 +1,16 @@
+'''Register page'''
 import reflex as rx
-from packages.ApiRequests import ApiRequests
+from packages.api_requests import ApiRequests
 from packages.ui_settings import SettingsState
 
 class RegisterState(rx.State):
+    '''State for the Register page'''
+    # pylint: disable=inherit-non-class
     api_url = ""
 
     @rx.event
     async def on_load(self):
+        '''On load gets the base api url'''
         self.api_url = SettingsState.api_url
 
     @rx.event
@@ -17,8 +21,8 @@ class RegisterState(rx.State):
         Error on registration
         """
         try:
-            registerResult = ApiRequests(self.api_url).create_user(
-                form_data["userName"], 
+            _ = ApiRequests(self.api_url).create_user(
+                form_data["userName"],
                 form_data["password"],
                 form_data["email"]
             ).json()
@@ -34,7 +38,8 @@ class RegisterState(rx.State):
                     "border-radius": "0.53m",
                 },
             )
-            
+
+# pylint: disable=not-callable)
 @rx.page(route="/register", on_load=RegisterState.on_load)
 def register_page():
     """Creates the Register page"""
@@ -54,7 +59,7 @@ def register_page():
                         custom_attrs = {
                             "data-testid" : "usernameInput",
                         },
-                    ), 
+                    ),
                     rx.input(
                         placeholder="Password",
                         name="password",
@@ -89,12 +94,12 @@ def register_page():
                             width="100%",
                         ),
                     ),
-                    width="100%", 
+                    width="100%",
                     justify="center",
-                ), 
-                on_submit=RegisterState.handle_submit, 
+                ),
+                on_submit=RegisterState.handle_submit,
                 reset_on_submit=True,
-            ), 
+            ),
         ),
         padding_top="30vh",
     )
