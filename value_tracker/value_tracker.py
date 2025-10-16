@@ -70,7 +70,7 @@ class State(rx.State):
     @rx.event
     async def logoff(self):
         """Removes the logged in state from the User and redirects them to the Login page"""
-        settings = await self.get_state(pages.Login.LoginState)
+        settings = await self.get_state(pages.login.LoginState)
         settings.logged_in = False
         self.stream = False
         return rx.redirect("/login")

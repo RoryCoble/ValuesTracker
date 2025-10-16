@@ -4,22 +4,13 @@ import pages.login
 from packages.api_requests import ApiRequests
 from packages.ui_settings import SettingsState
 
-class EntityDetails(rx.Model, table=True):
-    """Data model used to translate the retrieved data to Reflex's table component"""
-    # pylint: disable=inherit-non-class
-    code: str
-    type: str
-    first_constant: str
-    second_constant: str
-    third_constant: str
-
 class EntitiesState(rx.State):
     """State specific to the Manage Entities page"""
     # pylint: disable=inherit-non-class
     api_url = ""
     entities = []
     available_entities = []
-    entities_details: list[EntityDetails] = []
+    entities_details: list[list] = []
     user_name = ""
 
     @rx.event
@@ -27,7 +18,7 @@ class EntitiesState(rx.State):
         """Confirms that the User is logged in or redirects to the login 
         page then gathers the data necessary to populate the page"""
         self.api_url = SettingsState.api_url
-        settings = await self.get_state(pages.Login.LoginState)
+        settings = await self.get_state(pages.login.LoginState)
         self.user_name = settings.user_name
         self.entities = ApiRequests(self.api_url).get_entities_assigned_to_user(
             self.user_name).json()
@@ -61,18 +52,18 @@ class EntitiesState(rx.State):
     @rx.event
     async def logoff(self):
         """Removes the User's logged in state and redirects to the Login page"""
-        settings = await self.get_state(pages.Login.LoginState)
+        settings = await self.get_state(pages.login.LoginState)
         settings.logged_in = False
         return rx.redirect("/login")
 
-def show_record(entities_details: EntityDetails):
+def show_record(entities_detail: list):
     """Shows the Entity details in a table row."""
     return rx.table.row(
-        rx.table.cell(entities_details[0]),
-        rx.table.cell(entities_details[1]),
-        rx.table.cell(entities_details[2]),
-        rx.table.cell(entities_details[3]),
-        rx.table.cell(entities_details[4]),
+        rx.table.cell(entities_detail[0]),
+        rx.table.cell(entities_detail[1]),
+        rx.table.cell(entities_detail[2]),
+        rx.table.cell(entities_detail[3]),
+        rx.table.cell(entities_detail[4]),
         custom_attrs = {
             "data-testid" : "entitiesTableRow",
         },

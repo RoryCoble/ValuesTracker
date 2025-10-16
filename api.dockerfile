@@ -7,6 +7,7 @@ COPY packages/user_database.py packages/user_database.py
 COPY tests/__init__.py tests/__init__.py
 COPY tests/test_user_database.py tests/test_user_database.py
 COPY tests/test_api.py tests/test_api.py
+COPY tests/setup_functions.py tests/setup_functions.py
 COPY api_localtest.txt .
 COPY api.py .
 RUN pip install -r api_localtest.txt
