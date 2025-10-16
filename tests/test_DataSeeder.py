@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import pytest
 from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions
 from dataseeder import Dataseeder
+from tests.setup_functions import SetupFunctions
 
 @pytest.fixture(scope='session', name='setup')
 def fixture_setup():
@@ -12,16 +13,12 @@ def fixture_setup():
     compare that the values created match expectations then removes any 
     generated data
     """
+    SetupFunctions().truncate_entities()
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
         _entities_values = EntitiesValuesFunctions(conn)
         _dataseeder = Dataseeder(_entities_values)
-        with _entities_values.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
-            conn.commit()
         yield (_entities_values, _dataseeder)
-        with _entities_values.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
-            conn.commit()
+    SetupFunctions().truncate_entities()
 
 def test_generate_value(setup):
     '''Tests the Generate Value method'''

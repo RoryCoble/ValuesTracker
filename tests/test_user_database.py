@@ -2,6 +2,7 @@
 import pytest
 from packages.databases import DatabaseConnector
 from packages.user_database import UserFunctions
+from tests.setup_functions import SetupFunctions
 
 @pytest.fixture(scope='session', name='setup')
 def fixture_setup():
@@ -10,15 +11,11 @@ def fixture_setup():
     Renders the UserDatabase object for testing
     then cleans up any generated data
     """
+    SetupFunctions().truncate_users()
     with DatabaseConnector('EntitiesAndValues', 'api', "localhost", 5431) as conn:
         _user = UserFunctions(conn)
-        with _user.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.users, public.user_entities;')
-            conn.commit()
         yield _user
-        with _user.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.users, public.user_entities;')
-            conn.commit()
+    SetupFunctions().truncate_users()
 
 def test_add_user(setup):
     '''Tests Add User function'''

@@ -39,7 +39,7 @@ class RegisterState(rx.State):
                 },
             )
 
-# pylint: disable=not-callable)
+# pylint: disable=not-callable
 @rx.page(route="/register", on_load=RegisterState.on_load)
 def register_page():
     """Creates the Register page"""

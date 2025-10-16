@@ -4,6 +4,7 @@ from decimal import Decimal
 import pytest
 from packages.databases import DatabaseConnector, EntitiesValuesFunctions
 from dataseeder import Dataseeder
+from tests.setup_functions import SetupFunctions
 import dataseeder_api
 
 @pytest.fixture(scope='session', name='setup')
@@ -13,21 +14,16 @@ def fixture_setup():
     object for testing and the EntitiesValues object in order to compare that the values
     created match expectations then removes any generated data
     """
+    SetupFunctions().truncate_entities()
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
         _entities_values = EntitiesValuesFunctions(conn)
-        with _entities_values.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
-            conn.commit()
-
         _dataseeder = Dataseeder(_entities_values)
         app = dataseeder_api.dataseeder_api(_entities_values, _dataseeder)
         with app.test_client() as test_client:
             with app.app_context():
                 yield (test_client, _entities_values)
 
-        with _entities_values.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
-            conn.commit()
+    SetupFunctions().truncate_entities()
 
 def test_add_entity(setup):
     '''Tests the Add Entity endpoint'''

@@ -1,40 +1,22 @@
 '''Tests the ApiRequest module the UI uses to call the Api'''
 from datetime import datetime, timedelta
 import pytest
-from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions
-from packages.user_database import UserFunctions
+from packages.databases import EntityOptions
 from packages.api_requests import ApiRequests
+from tests.setup_functions import SetupFunctions
 
 @pytest.fixture(scope='session', name='setup')
 def fixture_setup():
     """Creates the expected test data, renders the API object for testing, 
     then cleans up any added data after the tests have run"""
-    with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
-        _entities_values = EntitiesValuesFunctions(conn)
-        with _entities_values.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
-            conn.commit()
+    SetupFunctions().truncate_entities()
+    SetupFunctions().truncate_users()
+    SetupFunctions().seed_entities()
 
-        _entities_values.add_entity('AAAAA', EntityOptions.SGFB.value, 0.2, 0.1, 0.5)
-        _entities_values.add_entity_value('AAAAA', datetime.now(), 7.2)
+    yield ApiRequests("http://localhost:5001/")
 
-    with DatabaseConnector('EntitiesAndValues', 'api', "localhost", 5431) as conn:
-        _user = UserFunctions(conn)
-        with _user.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.users, public.user_entities;')
-            conn.commit()
-
-        yield ApiRequests("http://localhost:5001/")
-
-        with _user.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.users, public.user_entities;')
-            conn.commit()
-
-    with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
-        _entities_values = EntitiesValuesFunctions(conn)
-        with _entities_values.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
-            conn.commit()
+    SetupFunctions().truncate_users()
+    SetupFunctions().truncate_entities()
 
 def test_get_entities(setup):
     '''Tests the Get Entities endpoint function'''
@@ -70,5 +52,5 @@ def test_get_entities_assigned_to_user(setup):
 
 def test_get_entity_details(setup):
     '''Tests Get Entity Details endpoint function'''
-    # pylint: disable=line-too-long
-    assert ['AAAAA', EntityOptions.SGFB.value, '0.2', '0.1', '0.5'] == setup.get_entity_details('AAAAA').json()[0]
+    assert ['AAAAA', EntityOptions.SGFB.value, '0.2', '0.1', '0.5'] \
+    == setup.get_entity_details('AAAAA').json()[0]

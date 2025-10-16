@@ -1,45 +1,28 @@
 '''Tests the api.py module'''
 from datetime import datetime, timedelta
 import pytest
-from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions
+from packages.databases import EntityOptions, DatabaseConnector, EntitiesValuesFunctions
 from packages.user_database import UserFunctions
+from tests.setup_functions import SetupFunctions
 import api
 
 @pytest.fixture(scope='session', name='setup')
 def fixture_setup():
     """Creates the expected test data, renders the API object for testing, 
     then cleans up any added data after the tests have run"""
+    SetupFunctions().truncate_entities()
+    SetupFunctions().truncate_users()
+    SetupFunctions().seed_entities()
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
         _entities_values = EntitiesValuesFunctions(conn)
-        with _entities_values.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
-            conn.commit()
-
-        _entities_values.add_entity('AAAAA', EntityOptions.SGFB.value, 0.2, 0.1, 0.5)
-        _entities_values.add_entity_value('AAAAA', datetime.now(), 7.2)
-
-    with DatabaseConnector('EntitiesAndValues', 'api', "localhost", 5431) as conn:
-        _user = UserFunctions(conn)
-        with _user.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.users, public.user_entities;')
-            conn.commit()
-
-        _entities_values = EntitiesValuesFunctions(conn)
-        app = api.values_tracker_api(_entities_values, _user)
-
-        with app.test_client() as test_client:
-            with app.app_context():
-                yield test_client
-
-        with _user.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.users, public.user_entities;')
-            conn.commit()
-
-    with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
-        _entities_values = EntitiesValuesFunctions(conn)
-        with _entities_values.conn.cursor() as cur:
-            cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
-            conn.commit()
+        with DatabaseConnector('EntitiesAndValues', 'api', "localhost", 5431) as conn:
+            _user = UserFunctions(conn)
+            app = api.values_tracker_api(_entities_values, _user)
+            with app.test_client() as test_client:
+                with app.app_context():
+                    yield test_client
+    SetupFunctions().truncate_users()
+    SetupFunctions().truncate_entities()
 
 def test_get_entities(setup):
     '''Tests the Get Existing Entities endpoint'''
@@ -92,5 +75,5 @@ def test_get_entities_assigned_to_user(setup):
 
 def test_get_entity_details(setup):
     '''Tests the Get Entity Details endpoint'''
-    # pylint: disable=line-too-long
-    assert ['AAAAA', EntityOptions.SGFB.value, '0.2', '0.1', '0.5'] == setup.get('/api/get_entity_details?code=AAAAA').json[0]
+    assert ['AAAAA', EntityOptions.SGFB.value, '0.2', '0.1', '0.5'] \
+    == setup.get('/api/get_entity_details?code=AAAAA').json[0]
