@@ -45,9 +45,7 @@ def test_add_value(setup):
     _dataseeder.generate_new_entity()
     new_entity = _entities_values.get_existing_entities()[0][0]
     _dataseeder.add_entity_value(1, new_entity)
-    value = _entities_values.get_values(new_entity, datetime.now() - timedelta(days=1))[0]
+    value = _entities_values.get_values(new_entity, 0)[0]
     assert value[0] == new_entity
-    assert value[1].year == datetime.now().year
-    assert value[1].month == datetime.now().month
-    assert value[1].day == datetime.now().day
+    assert value[1] == 1
     assert float(value[2]) >= 0
