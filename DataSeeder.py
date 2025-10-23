@@ -74,7 +74,7 @@ class Dataseeder:
                                     float(entity_details[2]),
                                     float(entity_details[3]),
                                     float(entity_details[4]))
-        self.entities_values.add_entity_value(code, datetime.now(), value)
+        self.entities_values.add_entity_value(code, count, value)
         return value
 
     def run(self):
@@ -85,9 +85,17 @@ class Dataseeder:
         i=0
         while True:
             i+=1
-            for entity in entities:
-                self.add_entity_value(i, entity)
-            time.sleep(random.randrange(10,60))
+            if len(entities) < 10:
+                for _ in range(0, 10 - len(entities)):
+                    self.generate_new_entity()
+                entities = [i[0] for i in self.entities_values.get_existing_entities()]
+            if i < 10:    
+                for entity in entities:
+                    self.add_entity_value(i, entity)
+            else:
+                for entity in entities:
+                    self.add_entity_value(i, entity)
+                time.sleep(60)
 
 if __name__ == "__main__":
     with DatabaseConnector('EntitiesAndValues', 'data_seeder', 'db', 5432) as conn:

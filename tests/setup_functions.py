@@ -27,4 +27,4 @@ class SetupFunctions:
         with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
             _entities_values = EntitiesValuesFunctions(conn)
             _entities_values.add_entity('AAAAA', EntityOptions.SGFB.value, 0.2, 0.1, 0.5)
-            _entities_values.add_entity_value('AAAAA', datetime.now(), 7.2)
+            _entities_values.add_entity_value('AAAAA', 1, 7.2)

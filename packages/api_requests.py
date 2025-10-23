@@ -18,16 +18,16 @@ class ApiRequests:
         """
         return rq.get(f"{self.base_path}/api/get_historical_values?code={entity_code}", timeout=10)
 
-    def get_new_values(self, entity_code, timestamp):
+    def get_new_values(self, entity_code, count):
         """
         Gets all of the values for the given Entity from the provided 
         timestamp up to the moment of calling
         Keyword arguments:
         entity_code -- code for the Entity whose values are being gotten
-        timestamp -- time for which Values occuring at or after are returned
+        count -- time for which Values occuring at or after are returned
         """
         return rq.get(f"{self.base_path}/api/get_new_values?"
-                      + f"code={entity_code}&timestamp={timestamp}", timeout=10)
+                      + f"code={entity_code}&count={count}", timeout=10)
 
     def create_user(self, user_name, password, email):
         """

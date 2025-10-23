@@ -31,14 +31,14 @@ def test_get_entities(setup):
 def test_get_historical_values(setup):
     '''Tests the Get Historical Values endpoint'''
     response_json = setup.get('/api/get_historical_values?code=AAAAA').json[0]
-    assert datetime.now().strftime('%a, %d %b %Y') in response_json['timestamp']
+    print(response_json)
+    assert 1 == response_json['count']
     assert '7.2' == response_json['value']
 
 def test_get_new_values(setup):
     '''Tests the Get New Values endpoint'''
-    # pylint: disable=line-too-long
-    response_json = setup.get(f'/api/get_new_values?code=AAAAA&timestamp={datetime.now() - timedelta(days=1)}').json[0]
-    assert datetime.now().strftime('%a, %d %b %Y') in response_json['timestamp']
+    response_json = setup.get('/api/get_new_values?code=AAAAA&count=0').json[0]
+    assert 1 == response_json['count']
     assert '7.2' == response_json['value']
 
 def test_create_user(setup):

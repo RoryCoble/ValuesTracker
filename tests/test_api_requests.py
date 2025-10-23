@@ -25,13 +25,13 @@ def test_get_entities(setup):
 def test_get_historical_values(setup):
     '''Tests the Get Historical Values endpoint function'''
     response = setup.get_historical_values('AAAAA').json()[0]
-    assert datetime.now().strftime('%a, %d %b %Y') in response['timestamp']
+    assert 1 == response['count']
     assert '7.2' == response['value']
 
 def test_get_new_values(setup):
     '''Tests the Get New Values endpoint function'''
-    response = setup.get_new_values('AAAAA', datetime.now() - timedelta(days=1)).json()[0]
-    assert datetime.now().strftime('%a, %d %b %Y') in response['timestamp']
+    response = setup.get_new_values('AAAAA', 0).json()[0]
+    assert 1 == response['count']
     assert '7.2' == response['value']
 
 def test_create_user(setup):

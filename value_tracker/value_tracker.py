@@ -1,6 +1,7 @@
 '''Main page of Values Tracker'''
 import asyncio
 from datetime import datetime
+import pandas as pd
 import reflex as rx
 import pages.login
 import pages.register
@@ -14,7 +15,7 @@ class State(rx.State):
     api_url = ""
     user_name = ""
     entities = []
-    last_timestamp = datetime.min
+    last_count = 0
     collected_graph_data = []
     single_graph_data = []
     stream = False
@@ -31,10 +32,13 @@ class State(rx.State):
         self.entities = ApiRequests(self.api_url).get_entities_assigned_to_user(
             self.user_name).json()
         self.collected_graph_data = []
+        last_count = None
         for entity in self.entities:
-            self.collected_graph_data.append(ApiRequests(self.api_url).get_historical_values(
-                entity).json())
-        self.last_timestamp = datetime.now()
+            response = ApiRequests(self.api_url).get_historical_values(
+                entity).json()
+            self.collected_graph_data.append(response)
+            last_count = response[-1]['count']
+        self.last_count = last_count if last_count is not None else 0
 
     # pylint: disable=not-callable
     @rx.event(background=True)
@@ -45,13 +49,21 @@ class State(rx.State):
         while self.stream:
             async with self:
                 i=0
+                last_count = None
                 for entity in self.entities:
                     new_data = ApiRequests(self.api_url).get_new_values(
-                        entity, self.last_timestamp).json()
+                        entity, self.last_count).json()
                     self.collected_graph_data[i].extend(new_data)
                     i+=1
-                self.last_timestamp = datetime.now()
-            await asyncio.sleep(10)
+                    last_count = new_data[-1]['count']
+                self.last_count = last_count if last_count is not None else 0
+                i=0
+                for data in self.collected_graph_data:
+                    df = pd.DataFrame(data)
+                    df = df.drop_duplicates()
+                    self.collected_graph_data[i] = df.to_dict(orient='records')
+                    i+=1
+            await asyncio.sleep(70)
 
     def stop_stream(self):
         """Stops the background task so data isn't being sent to nothing"""
@@ -100,7 +112,7 @@ def build_graph(entity, i):
                         "fill": rx.color("accent", 4)
                     },
                 ),
-                rx.recharts.x_axis(data_key="timestamp"),
+                rx.recharts.x_axis(data_key="count"),
                 rx.recharts.y_axis(),
                 rx.recharts.graphing_tooltip(),
                 data=State.collected_graph_data[i],
