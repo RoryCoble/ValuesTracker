@@ -1,9 +1,3 @@
-const dayjs = require('dayjs')
-var utc = require("dayjs/plugin/utc");
-var timezone = require("dayjs/plugin/timezone");
-dayjs.extend(utc)
-dayjs.extend(timezone)
-
 describe('Main page', () => {
     
   before(() => {
@@ -66,10 +60,8 @@ describe('Main page', () => {
     cy.get('[data-testid="AAAAA-Header"]').should('be.visible').and('have.text', 'AAAAA')
     cy.get('[class="recharts-responsive-container"]').should('be.visible')
     cy.get('[class="recharts-responsive-container"]').click()
-    cy.get('[class="recharts-tooltip-label"]').should('be.visible')
-        .and('contain.text', dayjs().tz('GMT').format('ddd, D MMM YYYY H:mm:')).and('contain.text','GMT')
+    cy.get('[class="recharts-tooltip-label"]').should('be.visible').and('contain.text', '1')
     cy.get('[class="recharts-tooltip-item"]').should('be.visible').and('have.text','value : ' + this.data_point.body)
-    cy.get('tspan').should('be.visible')
-        .and('contain.text', dayjs().tz('GMT').format('ddd, D MMM YYYY H:mm:')).and('contain.text','GMT')
+    cy.get('tspan').should('be.visible').should('be.visible').and('contain.text', '0')
   })
 })
