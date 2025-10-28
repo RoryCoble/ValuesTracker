@@ -1,5 +1,4 @@
 '''Tests the api.py module'''
-from datetime import datetime, timedelta
 import pytest
 from packages.databases import EntityOptions, DatabaseConnector, EntitiesValuesFunctions
 from packages.user_database import UserFunctions

@@ -1,6 +1,5 @@
 '''Main page of Values Tracker'''
 import asyncio
-from datetime import datetime
 import pandas as pd
 import reflex as rx
 import pages.login

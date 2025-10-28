@@ -1,5 +1,4 @@
 '''Tests the functions used by the Dataseeder'''
-from datetime import datetime, timedelta
 import pytest
 from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions
 from dataseeder import Dataseeder

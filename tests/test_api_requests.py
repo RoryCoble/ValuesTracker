@@ -1,5 +1,4 @@
 '''Tests the ApiRequest module the UI uses to call the Api'''
-from datetime import datetime, timedelta
 import pytest
 from packages.databases import EntityOptions
 from packages.api_requests import ApiRequests

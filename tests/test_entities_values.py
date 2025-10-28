@@ -1,5 +1,4 @@
 '''Tests for the Database functions not related to Users'''
-from datetime import datetime, timedelta
 from decimal import Decimal
 import pytest
 from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions

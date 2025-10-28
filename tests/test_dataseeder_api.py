@@ -1,5 +1,4 @@
 '''Tests the Dataseeder Api endpoints'''
-from datetime import datetime, timedelta
 from decimal import Decimal
 import pytest
 from packages.databases import DatabaseConnector, EntitiesValuesFunctions
