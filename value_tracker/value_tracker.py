@@ -1,6 +1,5 @@
 '''Main page of Values Tracker'''
 import asyncio
-import pandas as pd
 import reflex as rx
 import pages.login
 import pages.register
@@ -30,38 +29,23 @@ class State(rx.State):
         self.user_name = settings.user_name
         self.entities = ApiRequests(self.api_url).get_entities_assigned_to_user(
             self.user_name).json()
-        self.collected_graph_data = []
-        last_count = None
-        for entity in self.entities:
-            response = ApiRequests(self.api_url).get_historical_values(
-                entity).json()
-            self.collected_graph_data.append(response)
-            last_count = response[-1]['count']
+        (last_count, self.collected_graph_data) = ApiRequests(
+            self.api_url).get_collected_graph_data(
+            self.entities)
         self.last_count = last_count if last_count is not None else 0
 
     # pylint: disable=not-callable
     @rx.event(background=True)
     async def start_stream(self):
-        """Background function to update the graphs on a 10 second interval"""
+        """Background function to update the graphs on a 70 second interval"""
         async with self:
             self.stream = True
         while self.stream:
             async with self:
-                i=0
-                last_count = None
-                for entity in self.entities:
-                    new_data = ApiRequests(self.api_url).get_new_values(
-                        entity, self.last_count).json()
-                    self.collected_graph_data[i].extend(new_data)
-                    i+=1
-                    last_count = new_data[-1]['count']
+                (last_count, self.collected_graph_data) = ApiRequests(
+                    self.api_url).extend_collected_graph_data(
+                    self.collected_graph_data, self.entities, self.last_count)
                 self.last_count = last_count if last_count is not None else 0
-                i=0
-                for data in self.collected_graph_data:
-                    df = pd.DataFrame(data)
-                    df = df.drop_duplicates()
-                    self.collected_graph_data[i] = df.to_dict(orient='records')
-                    i+=1
             await asyncio.sleep(70)
 
     def stop_stream(self):

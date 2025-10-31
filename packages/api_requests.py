@@ -1,4 +1,5 @@
 '''Api Requests class'''
+import pandas as pd
 import requests as rq
 
 class ApiRequests:
@@ -86,3 +87,45 @@ class ApiRequests:
         code -- string
         """
         return rq.get(f"{self.base_path}/api/get_entity_details?code={code}", timeout=10)
+
+    def get_collected_graph_data(self, entities):
+        """
+        Collects the values data and wraps it up for the multiple graphs
+        Keyword arguments:
+        entities -- list of entities assigned to user
+        """
+        collected_graph_data = []
+        for entity in entities:
+            response = self.get_historical_values(entity).json()
+            collected_graph_data.append(response)
+        if not collected_graph_data:
+            last_count = None
+        else:
+            last_count = collected_graph_data[-1][-1]['count']
+
+        return (last_count, collected_graph_data)
+
+    def extend_collected_graph_data(self, collected_graph_data, entities, count):
+        """
+        Gets new values and appends them to the collected
+        graph data for the related entity
+        Keyword arguments:
+        collected_graph_data -- current dataset for the Entity based graphs
+        entities -- list of Entities assigned to the user
+        """
+        i=0
+        for entity in entities:
+            new_data = self.get_new_values(entity,
+                                           count).json()
+            collected_graph_data[i].extend(new_data)
+            collected_graph_data[i] = pd.DataFrame(
+                collected_graph_data[i]).drop_duplicates().to_dict(
+                orient='records')
+            i+=1
+
+        if not collected_graph_data:
+            last_count = count
+        else:
+            last_count = collected_graph_data[-1][-1]['count']
+
+        return (last_count, collected_graph_data)

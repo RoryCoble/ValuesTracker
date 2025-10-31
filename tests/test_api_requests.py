@@ -33,6 +33,21 @@ def test_get_new_values(setup):
     assert 1 == response['count']
     assert '7.2' == response['value']
 
+def test_get_collected_graph_data(setup):
+    '''Tests the Get Collected Graph Data function'''
+    (last_count, collected_graph_data) = setup.get_collected_graph_data(['AAAAA'])
+    assert 1 == last_count
+    assert '7.2' == collected_graph_data[0][0]['value']
+
+def test_extend_collected_graph_data(setup):
+    '''Tests the Extend Collected Graph Data function'''
+    (last_count, collected_graph_data) = setup.get_collected_graph_data(['AAAAA'])
+    (last_count, collected_graph_data) = setup.extend_collected_graph_data(collected_graph_data,
+                                                                           ['AAAAA'],
+                                                                           0)
+    assert 1 == last_count
+    assert '7.2' == collected_graph_data[0][0]['value']
+
 def test_create_user(setup):
     '''Tests the Create User endpoint function'''
     assert setup.create_user('Test', 'Test', 'Test').json() is True
