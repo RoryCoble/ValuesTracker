@@ -119,8 +119,8 @@ class ApiRequests:
                                            count).json()
             collected_graph_data[i].extend(new_data)
             collected_graph_data[i] = pd.DataFrame(
-                collected_graph_data[i]).drop_duplicates().to_dict(
-                orient='records')
+                collected_graph_data[i]).drop_duplicates().sort_values(
+                by="count").to_dict(orient='records')
             i+=1
 
         if not collected_graph_data:
@@ -129,3 +129,27 @@ class ApiRequests:
             last_count = collected_graph_data[-1][-1]['count']
 
         return (last_count, collected_graph_data)
+
+    def get_data_for_totals_chart(self, collected_graph_data, entities):
+        """
+        Takes the current collected graph data and assembles it in the
+        way Reflex wants to see multiple lines on a chart
+        Keywords arguments:
+        collected_graph_data -- current dataset for the Entity based graphs
+        entities -- list of Entities assigned to the user
+        """
+        i=0
+        df = pd.DataFrame()
+        for entity in entities:
+            if i == 0:
+                df = pd.DataFrame(collected_graph_data[i])
+                df = df.rename(columns={'value':entity})
+            else:
+                df2 = pd.DataFrame(collected_graph_data[i])
+                df = df.merge(df2,
+                              how='outer', 
+                              on='count'
+                             ).rename(
+                    columns={'value':entity})
+            i+=1
+        return df.to_dict(orient='records')

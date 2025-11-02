@@ -48,6 +48,15 @@ def test_extend_collected_graph_data(setup):
     assert 1 == last_count
     assert '7.2' == collected_graph_data[0][0]['value']
 
+def test_get_data_for_totals_chart(setup):
+    '''Tests the Get Data for Totals Chart function'''
+    (_, collected_graph_data) = setup.get_collected_graph_data(['AAAAA','BBBBB'])
+    totals_data = setup.get_data_for_totals_chart(collected_graph_data, ['AAAAA','BBBBB'])
+
+    assert totals_data[0]['count'] == 1
+    assert totals_data[0]['AAAAA'] == '7.2'
+    assert totals_data[0]['BBBBB'] == '15.2'
+
 def test_create_user(setup):
     '''Tests the Create User endpoint function'''
     assert setup.create_user('Test', 'Test', 'Test').json() is True
