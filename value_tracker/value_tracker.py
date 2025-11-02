@@ -92,6 +92,9 @@ def totals_graph_lines(entity, i):
                         "stroke": State.color_list[i], 
                         "fill": rx.color("accent", 4)
                     },
+                    custom_attrs = {
+                        "data-testid" : f"{entity}-Line",
+                    }
                 )
 
 def build_graph(entity, i):

@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "cypress": "^15.2.0",
+    "cypress-xpath": "^2.0.1",
     "pg": "^8.16.3"
   },
   "dependencies": {
