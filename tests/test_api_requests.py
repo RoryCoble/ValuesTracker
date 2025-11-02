@@ -1,5 +1,4 @@
 '''Tests the ApiRequest module the UI uses to call the Api'''
-from datetime import datetime, timedelta
 import pytest
 from packages.databases import EntityOptions
 from packages.api_requests import ApiRequests
@@ -25,14 +24,38 @@ def test_get_entities(setup):
 def test_get_historical_values(setup):
     '''Tests the Get Historical Values endpoint function'''
     response = setup.get_historical_values('AAAAA').json()[0]
-    assert datetime.now().strftime('%a, %d %b %Y') in response['timestamp']
+    assert 1 == response['count']
     assert '7.2' == response['value']
 
 def test_get_new_values(setup):
     '''Tests the Get New Values endpoint function'''
-    response = setup.get_new_values('AAAAA', datetime.now() - timedelta(days=1)).json()[0]
-    assert datetime.now().strftime('%a, %d %b %Y') in response['timestamp']
+    response = setup.get_new_values('AAAAA', 0).json()[0]
+    assert 1 == response['count']
     assert '7.2' == response['value']
+
+def test_get_collected_graph_data(setup):
+    '''Tests the Get Collected Graph Data function'''
+    (last_count, collected_graph_data) = setup.get_collected_graph_data(['AAAAA'])
+    assert 1 == last_count
+    assert '7.2' == collected_graph_data[0][0]['value']
+
+def test_extend_collected_graph_data(setup):
+    '''Tests the Extend Collected Graph Data function'''
+    (last_count, collected_graph_data) = setup.get_collected_graph_data(['AAAAA'])
+    (last_count, collected_graph_data) = setup.extend_collected_graph_data(collected_graph_data,
+                                                                           ['AAAAA'],
+                                                                           0)
+    assert 1 == last_count
+    assert '7.2' == collected_graph_data[0][0]['value']
+
+def test_get_data_for_totals_chart(setup):
+    '''Tests the Get Data for Totals Chart function'''
+    (_, collected_graph_data) = setup.get_collected_graph_data(['AAAAA','BBBBB'])
+    totals_data = setup.get_data_for_totals_chart(collected_graph_data, ['AAAAA','BBBBB'])
+
+    assert totals_data[0]['count'] == 1
+    assert totals_data[0]['AAAAA'] == '7.2'
+    assert totals_data[0]['BBBBB'] == '15.2'
 
 def test_create_user(setup):
     '''Tests the Create User endpoint function'''

@@ -1,5 +1,4 @@
 '''Tests the Dataseeder Api endpoints'''
-from datetime import datetime, timedelta
 from decimal import Decimal
 import pytest
 from packages.databases import DatabaseConnector, EntitiesValuesFunctions
@@ -49,9 +48,7 @@ def test_add_value(setup):
         'entityCode' : 'AAAAA',
     }).json
 
-    values = _entities_values.get_values('AAAAA', datetime.now() - timedelta(days=1))[0]
+    values = _entities_values.get_values('AAAAA', 0)[0]
     assert values[0] == 'AAAAA'
-    assert values[1].year == datetime.now().year
-    assert values[1].month == datetime.now().month
-    assert values[1].day == datetime.now().day
+    assert values[1] == 1
     assert values[2] != 0

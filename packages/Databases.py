@@ -69,19 +69,19 @@ class EntitiesValuesFunctions:
 
         return success
 
-    def add_entity_value(self, code, timestamp, value):
+    def add_entity_value(self, code, count, value):
         """
         Adds the provided Value for a given Entity
         Keyword arguments:
         code -- the code for the Entity that the Value will be attached to
-        timestamp -- when the Entity had the provided Value
+        count -- when the Entity had the provided Value
         value -- numeric entry for the provided Entity
         """
         success = False
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
-                    cur.callproc('add_entity_value', (code, timestamp, value))
+                    cur.callproc('add_entity_value', (code, count, value))
                     success = cur.fetchall()[0][0]
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
@@ -105,18 +105,18 @@ class EntitiesValuesFunctions:
 
         return entity_details
 
-    def get_values(self, code, timestamp):
+    def get_values(self, code, count):
         """
         Gets the Values connected to the provided Entity that occurred after the provided timestamp
         Keyword arguments:
         code -- Entity that has the requested values
-        timestamp -- all values returned are after this timestamp
+        count -- all values returned are after this count
         """
         values = []
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
-                    cur.callproc('get_values', (code, timestamp))
+                    cur.callproc('get_values', (code, count))
                     values = cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)

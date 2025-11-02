@@ -1,9 +1,3 @@
-const dayjs = require('dayjs')
-var utc = require("dayjs/plugin/utc");
-var timezone = require("dayjs/plugin/timezone");
-dayjs.extend(utc)
-dayjs.extend(timezone)
-
 describe('Main page', () => {
     
   before(() => {
@@ -39,6 +33,18 @@ describe('Main page', () => {
     })
     cy.request({
         method: 'POST',
+        url: Cypress.env('dataseeder_api') + '/dataseed/add_entity',
+        form: true,
+        body: {
+          entityCode: 'BBBBB',
+          entityType: 'Volatile',
+          firstConstant: '1.2',
+          secondConstant: '1.2',
+          thirdConstant: '1.2'
+        },
+    })  
+    cy.request({
+        method: 'POST',
         url: Cypress.env('api') + '/api/connect_user_entity',
         form: true,
         body: {
@@ -48,13 +54,31 @@ describe('Main page', () => {
     })
     cy.request({
         method: 'POST',
+        url: Cypress.env('api') + '/api/connect_user_entity',
+        form: true,
+        body: {
+          userName: 'a',
+          entityCode: 'BBBBB'  
+        },
+    })  
+    cy.request({
+        method: 'POST',
         url: Cypress.env('dataseeder_api') + '/dataseed/add_value',
         form: true,
         body: {
           count: 1,
           entityCode: 'AAAAA'  
         },
-    }).as('data_point')
+    }).as('data_point_AAAAA')
+    cy.request({
+        method: 'POST',
+        url: Cypress.env('dataseeder_api') + '/dataseed/add_value',
+        form: true,
+        body: {
+          count: 1,
+          entityCode: 'BBBBB'  
+        },
+    }).as('data_point_BBBBB')  
   })
   
   beforeEach(() => {
@@ -64,12 +88,19 @@ describe('Main page', () => {
   it('should display the expected elements', function () {
     cy.get('[data-testid="pageTitle"]').should('be.visible').and('have.text', 'Entity Tracker')
     cy.get('[data-testid="AAAAA-Header"]').should('be.visible').and('have.text', 'AAAAA')
-    cy.get('[class="recharts-responsive-container"]').should('be.visible')
-    cy.get('[class="recharts-responsive-container"]').click()
-    cy.get('[class="recharts-tooltip-label"]').should('be.visible')
-        .and('contain.text', dayjs().tz('GMT').format('ddd, D MMM YYYY H:mm:')).and('contain.text','GMT')
-    cy.get('[class="recharts-tooltip-item"]').should('be.visible').and('have.text','value : ' + this.data_point.body)
-    cy.get('tspan').should('be.visible')
-        .and('contain.text', dayjs().tz('GMT').format('ddd, D MMM YYYY H:mm:')).and('contain.text','GMT')
+    cy.xpath('//h1[@data-testid="Totals-Header"]/following::div[1]/*[@class="recharts-responsive-container"]').should('be.visible')
+    cy.xpath('//h1[@data-testid="Totals-Header"]/following::div[1]/*[@class="recharts-responsive-container"]').click()
+    cy.get('[class="recharts-tooltip-label"]').should('be.visible').and('contain.text', '1')
+    cy.get('[class="recharts-tooltip-item"]').should('be.visible').and('contain.text','AAAAA : ' + this.data_point_AAAAA.body)
+    cy.get('[class="recharts-tooltip-item"]').should('be.visible').and('contain.text','BBBBB : ' + this.data_point_BBBBB.body)  
+    cy.get('tspan').should('be.visible').should('be.visible').and('contain.text', '0')
+    cy.xpath('//h1[@data-testid="AAAAA-Header"]/following::*[@class="recharts-responsive-container"][1]').should('be.visible')
+    cy.xpath('//h1[@data-testid="AAAAA-Header"]/following::*[@class="recharts-responsive-container"][1]').click()
+    cy.get('[class="recharts-tooltip-label"]').should('be.visible').and('contain.text', '1')
+    cy.get('[class="recharts-tooltip-item"]').should('be.visible').and('contain.text','value : ' + this.data_point_AAAAA.body)  
+    cy.xpath('//h1[@data-testid="AAAAA-Header"]/following::*[@class="recharts-responsive-container"][2]').should('be.visible')
+    cy.xpath('//h1[@data-testid="AAAAA-Header"]/following::*[@class="recharts-responsive-container"][2]').click()
+    cy.get('[class="recharts-tooltip-label"]').should('be.visible').and('contain.text', '1')
+    cy.get('[class="recharts-tooltip-item"]').should('be.visible').and('contain.text','value : ' + this.data_point_BBBBB.body)    
   })
 })

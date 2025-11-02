@@ -1,6 +1,5 @@
 '''Main page of Values Tracker'''
 import asyncio
-from datetime import datetime
 import reflex as rx
 import pages.login
 import pages.register
@@ -14,9 +13,10 @@ class State(rx.State):
     api_url = ""
     user_name = ""
     entities = []
-    last_timestamp = datetime.min
+    last_count = 0
     collected_graph_data = []
-    single_graph_data = []
+    totals_data = []
+    color_list = []
     stream = False
 
     @rx.event
@@ -24,34 +24,37 @@ class State(rx.State):
         """Checks that the User is logged in, redirects if not, and loads
         the data necessary to produce the Entity graphs"""
         self.api_url = SettingsState.api_url
+        self.color_list = SettingsState.color_list
         settings = await self.get_state(pages.login.LoginState)
         if not settings.logged_in:
             return rx.redirect("/login")
         self.user_name = settings.user_name
         self.entities = ApiRequests(self.api_url).get_entities_assigned_to_user(
             self.user_name).json()
-        self.collected_graph_data = []
-        for entity in self.entities:
-            self.collected_graph_data.append(ApiRequests(self.api_url).get_historical_values(
-                entity).json())
-        self.last_timestamp = datetime.now()
+        (last_count, self.collected_graph_data) = ApiRequests(
+            self.api_url).get_collected_graph_data(
+            self.entities)
+        self.totals_data = ApiRequests(
+            self.api_url).get_data_for_totals_chart(
+            self.collected_graph_data, self.entities) 
+        self.last_count = last_count if last_count is not None else 0
 
     # pylint: disable=not-callable
     @rx.event(background=True)
     async def start_stream(self):
-        """Background function to update the graphs on a 10 second interval"""
+        """Background function to update the graphs on a 70 second interval"""
         async with self:
             self.stream = True
         while self.stream:
             async with self:
-                i=0
-                for entity in self.entities:
-                    new_data = ApiRequests(self.api_url).get_new_values(
-                        entity, self.last_timestamp).json()
-                    self.collected_graph_data[i].extend(new_data)
-                    i+=1
-                self.last_timestamp = datetime.now()
-            await asyncio.sleep(10)
+                (last_count, self.collected_graph_data) = ApiRequests(
+                    self.api_url).extend_collected_graph_data(
+                    self.collected_graph_data, self.entities, self.last_count)
+                self.totals_data = ApiRequests(
+                    self.api_url).get_data_for_totals_chart(
+                    self.collected_graph_data, self.entities) 
+                self.last_count = last_count if last_count is not None else 0
+            await asyncio.sleep(70)
 
     def stop_stream(self):
         """Stops the background task so data isn't being sent to nothing"""
@@ -74,6 +77,25 @@ class State(rx.State):
         settings.logged_in = False
         self.stream = False
         return rx.redirect("/login")
+
+def totals_graph_lines(entity, i):
+    """
+    Creates the lines for the totals line graph
+    entity -- the Entity that maps the line
+    i -- iterating variable used to ensure different line colors
+    """
+    return rx.recharts.line(
+                    data_key=entity,
+                    type_="monotone",
+                    stroke=State.color_list[i],
+                    dot={
+                        "stroke": State.color_list[i], 
+                        "fill": rx.color("accent", 4)
+                    },
+                    custom_attrs = {
+                        "data-testid" : f"{entity}-Line",
+                    }
+                )
 
 def build_graph(entity, i):
     """
@@ -100,7 +122,7 @@ def build_graph(entity, i):
                         "fill": rx.color("accent", 4)
                     },
                 ),
-                rx.recharts.x_axis(data_key="timestamp"),
+                rx.recharts.x_axis(data_key="count"),
                 rx.recharts.y_axis(),
                 rx.recharts.graphing_tooltip(),
                 data=State.collected_graph_data[i],
@@ -205,6 +227,43 @@ def index():
                             custom_attrs = {
                                 "data-testid" : "pageTitle",
                             },
+                        ),
+                        rx.divider(),
+                        rx.vstack(
+                            rx.heading(
+                                "Totals",
+                                custom_attrs = {
+                                    "data-testid" : "Totals-Header",
+                                },
+                            ),
+                            rx.card(
+                                rx.recharts.line_chart(
+                                    rx.foreach(
+                                        State.entities,
+                                        lambda entity, index: totals_graph_lines(
+                                            entity, index
+                                        ),
+                                    ),
+                                    rx.recharts.x_axis(data_key="count"),
+                                    rx.recharts.y_axis(),
+                                    rx.recharts.graphing_tooltip(),
+                                    data=State.totals_data,
+                                    height=200,
+                                    width='100%',
+                                    margin={
+                                        "top": 20,
+                                        "right": 20,
+                                        "left": 20,
+                                        "bottom": 20,
+                                    },
+                                    custom_attrs = {
+                                        "data-testid" : "Totals-Graph",
+                                    },
+                                ),
+                                style={
+                                    "width":"60vw"
+                                }
+                            ),
                         ),
                         rx.divider(),
                         rx.vstack(

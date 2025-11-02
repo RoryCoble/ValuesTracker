@@ -26,8 +26,8 @@ def values_tracker_api(_entities_values, _user_functions):
         - code : string
         """
         code = request.args.get('code')
-        historical_values = [{'value': i[2], 'timestamp': i[1]} for i in
-                            app.config['EntitiesValues'].get_values(code, datetime.min)]
+        historical_values = [{'value': i[2], 'count': i[1]} for i in
+                            app.config['EntitiesValues'].get_values(code, 0)]
         return jsonify(historical_values)
 
     @app.route('/api/get_new_values', methods=['GET'])
@@ -37,12 +37,12 @@ def values_tracker_api(_entities_values, _user_functions):
         up to the moment of calling
         Required Values:
         - entityCode : code for the Entity whose values are being gotten
-        - timestamp : time for which Values occuring at or after are returned
+        - count : count for which Values occuring at or after are returned
         """
         code = request.args.get('code')
-        timestamp = request.args.get('timestamp')
-        new_values = [{'value': i[2], 'timestamp': i[1]} for i in
-                     app.config['EntitiesValues'].get_values(code, timestamp)]
+        count = request.args.get('count')
+        new_values = [{'value': i[2], 'count': i[1]} for i in
+                     app.config['EntitiesValues'].get_values(code, count)]
         return jsonify(new_values)
 
     @app.route('/api/create_user', methods=['POST'])

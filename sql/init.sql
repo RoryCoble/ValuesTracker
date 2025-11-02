@@ -12,9 +12,9 @@ CREATE TABLE IF NOT EXISTS public.entities (
 
 CREATE TABLE IF NOT EXISTS public.entity_values (
     entity_code 	 	char(5) NOT NULL,
-    entity_timestamp 	timestamp NOT NULL,
+    entity_count 	    integer NOT NULL,
 	entity_value 	 	numeric NOT NULL,
-	PRIMARY KEY (entity_code, entity_timestamp)
+	PRIMARY KEY (entity_code, entity_count)
 );
 
 CREATE TABLE IF NOT EXISTS public.users (
@@ -54,13 +54,13 @@ CREATE OR REPLACE FUNCTION public.add_entity(entity_code 	 char(5),
 	$$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION public.add_entity_value(entity_code 		char(5),
-												   entity_timestamp timestamp,
+												   entity_count     integer,
 												   entity_value		numeric)
 	RETURNS boolean AS
 	$$
 		BEGIN
 			INSERT INTO entity_values
-			VALUES (entity_code, entity_timestamp, entity_value);
+			VALUES (entity_code, entity_count, entity_value);
 			RETURN TRUE;
 		EXCEPTION WHEN others THEN
 			RETURN FALSE;
@@ -93,14 +93,14 @@ CREATE OR REPLACE FUNCTION public.get_entity_details(code char(5))
 		END;
 	$$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION public.get_values(code char(5), code_timestamp timestamp)
+CREATE OR REPLACE FUNCTION public.get_values(code char(5), code_count integer)
 	RETURNS SETOF entity_values AS
 	$$
 		BEGIN
 			RETURN QUERY SELECT entity_code,
-								entity_timestamp,
+								entity_count,
 								entity_value
-				   FROM public.entity_values WHERE entity_code=code AND entity_timestamp >= code_timestamp;
+				   FROM public.entity_values WHERE entity_code=code AND entity_count >= code_count;
 		EXCEPTION WHEN others THEN
 			RETURN;
 		END;
@@ -173,8 +173,8 @@ GRANT EXECUTE ON FUNCTION public.get_existing_entities() TO data_seeder, api;
 GRANT EXECUTE ON FUNCTION public.get_entity_details(character) TO data_seeder, api;
 GRANT EXECUTE ON FUNCTION public.add_entity(character, entity_type_options, numeric, numeric, numeric) 
 	TO data_seeder;
-GRANT EXECUTE ON FUNCTION public.add_entity_value(character, timestamp, numeric) TO data_seeder;
-GRANT EXECUTE ON FUNCTION public.get_values(character, timestamp) TO data_seeder, api;
+GRANT EXECUTE ON FUNCTION public.add_entity_value(character, integer, numeric) TO data_seeder;
+GRANT EXECUTE ON FUNCTION public.get_values(character, integer) TO data_seeder, api;
 GRANT EXECUTE ON FUNCTION public.add_user(varchar(10), text, text) TO api;
 GRANT EXECUTE ON FUNCTION public.get_user(varchar(10)) TO api;
 GRANT EXECUTE ON FUNCTION public.get_entities_assigned_to_user(varchar(10)) TO api;

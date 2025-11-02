@@ -1,5 +1,4 @@
 '''Tests for the Database functions not related to Users'''
-from datetime import datetime, timedelta
 from decimal import Decimal
 import pytest
 from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions
@@ -33,13 +32,11 @@ def test_get_entity_details(setup):
 
 def test_add_entity_value(setup):
     '''Tests the Add Entity Value function'''
-    assert setup.add_entity_value('AAAAA', datetime.now(), 7.2)
+    assert setup.add_entity_value('AAAAA', 0, 7.2)
 
 def test_get_values(setup):
     '''Tests the Get Values function'''
-    values = setup.get_values('AAAAA', datetime.now() - timedelta(days=1))[0]
+    values = setup.get_values('AAAAA', 0)[0]
     assert values[0] == 'AAAAA'
-    assert values[1].year == datetime.now().year
-    assert values[1].month == datetime.now().month
-    assert values[1].day == datetime.now().day
+    assert values[1] == 0
     assert values[2] == Decimal('7.2')
