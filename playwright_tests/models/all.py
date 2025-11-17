@@ -1,6 +1,7 @@
 '''Page Object Model for Values Tracker Pages in general'''
 import os
 import requests as rq
+from playwright.sync_api import expect
 
 class AllPage:
     '''General page object model class'''
@@ -67,3 +68,19 @@ class AllPage:
             'entityCode': entity
         }
         return rq.post(f"{self.dataseeder_api_url}/dataseed/add_value", data = data, timeout=10)
+
+    def test_page_title(self, page_title):
+        '''
+        Abstracts the testing of each pages title
+        since they all share IDs
+        Keyword arguments:
+        page_title -- string of the expected Page Title
+        '''
+        expect(
+            self.page_title,
+            "Page title is not displayed"
+        ).to_be_visible()
+        expect(
+            self.page_title,
+            "Page title text does not match"
+        ).to_contain_text(page_title)
