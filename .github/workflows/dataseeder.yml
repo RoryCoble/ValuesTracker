@@ -37,7 +37,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.ghcr_password }}
         ports:
-          - 5432:5432
+          - 5432:5431
           
     steps:
     - name: Checkout repository
@@ -62,9 +62,6 @@ jobs:
       with:
         context: .
         file: dockerfiles/dataseeder.dockerfile
-        build-args: |
-          HOST=localhost
-          PORT=5432
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
