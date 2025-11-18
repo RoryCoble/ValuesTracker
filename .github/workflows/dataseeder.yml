@@ -57,17 +57,15 @@ jobs:
     - name: Build and push Docker image
       id: push
       uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-      env:
-        HOST: db
-        PORT: 5432
       with:
         context: .
         file: dockerfiles/dataseeder.dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        HOST: db
-        PORT: 5432
+        build-args: |
+          HOST:db
+          PORT:5432
 
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v3
