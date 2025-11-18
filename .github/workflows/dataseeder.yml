@@ -60,8 +60,8 @@ jobs:
       id: buildx
       uses: docker/setup-buildx-action@v2
       with:
-        driver-opts: |
-          network=host
+        buildkitd-flags: '--allow-insecure-entitlement network.host'
+        driver-opts: network=host
 
     - name: Build and push Docker image
       id: push
