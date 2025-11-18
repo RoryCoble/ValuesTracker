@@ -62,7 +62,7 @@ jobs:
       with:
         context: .
         file: dockerfiles/dataseeder.dockerfile
-        driver-opts: network=host
+        network: host
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
