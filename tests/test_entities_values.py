@@ -11,8 +11,10 @@ def fixture_setup():
     Renders the EntitiesValues object for testing
     then cleans up any generated data
     """
+    host = os.getenv('HOST', 'localhost')
+    port = os.getenv('PORT', 5431)
     SetupFunctions().truncate_entities()
-    with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
+    with DatabaseConnector('EntitiesAndValues', 'data_seeder', host, port) as conn:
         _entities_values = EntitiesValuesFunctions(conn)
         yield _entities_values
     SetupFunctions().truncate_entities()

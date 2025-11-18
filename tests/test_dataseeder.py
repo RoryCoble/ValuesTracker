@@ -12,8 +12,10 @@ def fixture_setup():
     compare that the values created match expectations then removes any 
     generated data
     """
+    host = os.getenv('HOST', 'localhost')
+    port = os.getenv('PORT', 5431)
     SetupFunctions().truncate_entities()
-    with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
+    with DatabaseConnector('EntitiesAndValues', 'data_seeder', host, port) as conn:
         _entities_values = EntitiesValuesFunctions(conn)
         _dataseeder = Dataseeder(_entities_values)
         yield (_entities_values, _dataseeder)
