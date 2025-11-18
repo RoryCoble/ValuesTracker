@@ -16,4 +16,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Builds the database image
-      run: docker build . --file sql/db.dockerfile --tag db:$(date +%s)
+      run: docker build . --file dockerfiles/db.dockerfile --tag db:$(date +%s)
