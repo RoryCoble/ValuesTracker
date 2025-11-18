@@ -34,7 +34,7 @@ jobs:
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.ghcr_password }}
-
+          
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
