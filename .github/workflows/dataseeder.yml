@@ -11,25 +11,12 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    container: docker:dind 
     permissions:
       contents: read
       packages: write
       attestations: write
       id-token: write
-    services:
-      db:
-        image: ghcr.io/rorycoble/valuestracker_db:main
-        env:
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        credentials:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.ghcr_password }}
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -57,7 +44,7 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          HOST="db"
+          HOST=db
           PORT=5432
 
     - name: Generate artifact attestation
