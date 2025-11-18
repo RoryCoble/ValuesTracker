@@ -26,6 +26,8 @@ jobs:
     services:
       db:
         image: ghcr.io/rorycoble/valuestracker_db:main
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
