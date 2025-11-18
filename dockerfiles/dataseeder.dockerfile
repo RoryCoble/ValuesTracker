@@ -1,10 +1,6 @@
 FROM python:latest AS base
 # Create integration testing environment
 RUN apt-get update
-ARG HOST
-ENV HOST ${HOST}
-ARG PORT
-ENV PORT ${PORT}
 COPY packages/__init__.py packages/__init__.py
 COPY packages/databases.py packages/databases.py
 COPY packages/user_database.py packages/user_database.py

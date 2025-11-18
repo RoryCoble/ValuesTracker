@@ -24,9 +24,6 @@ services:
       context: .
       dockerfile: dockerfiles/dataseeder.dockerfile
       network: host
-      args:
-        HOST: localhost
-        PORT: 5431
     depends_on:
       db:
         condition: service_healthy
