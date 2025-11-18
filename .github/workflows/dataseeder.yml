@@ -1,28 +1,22 @@
 name: Dataseeder Docker Build And Publish
-
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}_dataseeder
-
 jobs:
-
   build-and-push-image:
-
     runs-on: ubuntu-latest
-
+    container: ubuntu
     permissions:
       contents: read
       packages: write
       attestations: write
       id-token: write
-
     services:
       db:
         image: ghcr.io/rorycoble/valuestracker_db:main
@@ -36,9 +30,6 @@ jobs:
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.ghcr_password }}
-        ports:
-          - 5432:5432
-          
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -62,12 +53,12 @@ jobs:
       with:
         context: .
         file: dockerfiles/dataseeder.dockerfile
-        build-args: |
-          HOST=localhost
-          PORT=5432
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          HOST=db
+          PORT=5432
 
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v3
