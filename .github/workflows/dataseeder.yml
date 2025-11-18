@@ -16,9 +16,7 @@ jobs:
   build-and-push-image:
 
     runs-on: ubuntu-latest
-    env:
-      HOST: db
-      PORT: 5432
+
     permissions:
       contents: read
       packages: write
@@ -62,6 +60,9 @@ jobs:
       with:
         context: .
         file: dockerfiles/dataseeder.dockerfile
+        build-args: |
+          HOST=db
+          PORT=5432
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
