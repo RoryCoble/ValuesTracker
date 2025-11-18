@@ -7,6 +7,10 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+env:
+  POSTGRES_PASSWORD: ${{ secrets.postgres_password }}
+  POSTGRES_DB: EntitiesAndValues
+
 jobs:
 
   build:
