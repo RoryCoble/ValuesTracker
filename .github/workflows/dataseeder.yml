@@ -10,6 +10,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}_dataseeder
+  HOST: db
+  PORT: 5432
 
 jobs:
 
