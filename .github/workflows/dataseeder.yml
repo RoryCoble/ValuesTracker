@@ -25,7 +25,7 @@ jobs:
 
     services:
       db:
-        image: ghcr.io/rorycoble/valuestracker_db
+        image: ghcr.io/rorycoble/valuestracker_db:latest
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -33,7 +33,7 @@ jobs:
           --health-retries 5
         credentials:
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.ghcr_password }}
           
     steps:
     - name: Checkout repository
