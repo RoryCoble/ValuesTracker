@@ -33,7 +33,7 @@ jobs:
           --health-retries 5
         credentials:
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.ghcr_password }}
+          password: ${{ secrets.GITHUB_TOKEN }}
           
     steps:
     - name: Checkout repository
