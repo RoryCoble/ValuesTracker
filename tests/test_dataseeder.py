@@ -1,4 +1,5 @@
 '''Tests the functions used by the Dataseeder'''
+import os
 import pytest
 from packages.databases import DatabaseConnector, EntityOptions, EntitiesValuesFunctions
 from dataseeder import Dataseeder

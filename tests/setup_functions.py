@@ -1,4 +1,5 @@
 '''General functions that tests use to modify data'''
+import os
 from packages.databases import EntityOptions, DatabaseConnector, EntitiesValuesFunctions
 from packages.user_database import UserFunctions
 
