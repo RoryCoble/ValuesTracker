@@ -16,7 +16,9 @@ jobs:
   build-and-push-image:
 
     runs-on: ubuntu-latest
-
+    env:
+      HOST: db
+      PORT: 5432
     permissions:
       contents: read
       packages: write
@@ -63,9 +65,6 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        build-args: |
-          HOST:db
-          PORT:5432
 
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v3
