@@ -24,13 +24,16 @@ jobs:
       id-token: write
 
     services:
-      postgres:
+      db:
         image: ghcr.io/rorycoble/valuestracker_db
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - name: Checkout repository
