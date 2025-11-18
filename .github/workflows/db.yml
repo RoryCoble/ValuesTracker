@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  POSTGRES_PASSWORD: ${{ secrets.postgres_password }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_DB: EntitiesAndValues
 
 jobs:
