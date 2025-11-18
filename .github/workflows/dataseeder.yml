@@ -69,6 +69,7 @@ jobs:
       with:
         context: .
         file: dockerfiles/dataseeder.dockerfile
+        allow: network.host
         network: host
         push: true
         tags: ${{ steps.meta.outputs.tags }}
