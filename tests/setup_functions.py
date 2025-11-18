@@ -10,7 +10,7 @@ class SetupFunctions:
 
     def truncate_entities(self, host=host, port=port):
         '''Clears the Entities and Entity Values tables via truncation'''
-        with DatabaseConnector('EntitiesAndValues', 'data_seeder', self.host, self.port) as conn:
+        with DatabaseConnector('EntitiesAndValues', 'data_seeder', host, port) as conn:
             _entities_values = EntitiesValuesFunctions(conn)
             with _entities_values.conn.cursor() as cur:
                 cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
@@ -18,7 +18,7 @@ class SetupFunctions:
 
     def truncate_users(self, host=host, port=port):
         '''Clears the Users and User Entities tables via truncation'''
-        with DatabaseConnector('EntitiesAndValues', 'api', self.host, self.port) as conn:
+        with DatabaseConnector('EntitiesAndValues', 'api', host, port) as conn:
             _user = UserFunctions(conn)
             with _user.conn.cursor() as cur:
                 cur.execute('TRUNCATE TABLE public.users, public.user_entities;')
@@ -26,7 +26,7 @@ class SetupFunctions:
 
     def seed_entities(self, host=host, port=port):
         '''Creates sample entities for the Api to play with for testing'''
-        with DatabaseConnector('EntitiesAndValues', 'data_seeder', self.host, self.port) as conn:
+        with DatabaseConnector('EntitiesAndValues', 'data_seeder', host, port) as conn:
             _entities_values = EntitiesValuesFunctions(conn)
             _entities_values.add_entity('AAAAA', EntityOptions.SGFB.value, 0.2, 0.1, 0.5)
             _entities_values.add_entity('BBBBB', EntityOptions.V.value, 0.2, 0.1, 0.5)
