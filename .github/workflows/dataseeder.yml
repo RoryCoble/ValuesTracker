@@ -27,7 +27,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         options: >-
-          --health-cmd "pg_isready -U postgres -d EntitiesAndValues"
+          --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 10s
           --health-retries 5
@@ -48,10 +48,6 @@ jobs:
       uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-    - name: Sleep for 30 seconds
-      run: sleep 30s
-      shell: bash
 
     - name: Build and push Docker image
       id: push
