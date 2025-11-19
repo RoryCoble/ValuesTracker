@@ -12,9 +12,11 @@ def fixture_setup():
     SetupFunctions().truncate_entities()
     SetupFunctions().truncate_users()
     SetupFunctions().seed_entities()
-    with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
+    host = os.getenv('HOST', 'localhost')
+    port = os.getenv('PORT', 5431)
+    with DatabaseConnector('EntitiesAndValues', 'data_seeder', host, port) as conn:
         _entities_values = EntitiesValuesFunctions(conn)
-        with DatabaseConnector('EntitiesAndValues', 'api', "localhost", 5431) as conn:
+        with DatabaseConnector('EntitiesAndValues', 'api', host, port) as conn:
             _user = UserFunctions(conn)
             app = api.values_tracker_api(_entities_values, _user)
             with app.test_client() as test_client:

@@ -38,6 +38,9 @@ services:
       context: .
       dockerfile: dockerfiles/api.dockerfile
       network: host
+      args:
+        HOST: localhost
+        PORT: 5431
     ports:
       - "5001:5000"
     depends_on:
