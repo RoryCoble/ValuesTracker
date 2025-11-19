@@ -16,6 +16,22 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+    services:
+      db:
+        image: ghcr.io/rorycoble/valuestracker_db:main
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.ghcr_password }}
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        options: >-
+          --health-cmd pg_isready -U postgres -d EntitiesAndValues
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 5
+          --health-start_period 30s
       
     steps:
     - name: Checkout repository
@@ -43,8 +59,9 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        network: host
         build-args: |
-          HOST=db
+          HOST=localhost
           PORT=5432
 
     - name: Generate artifact attestation
