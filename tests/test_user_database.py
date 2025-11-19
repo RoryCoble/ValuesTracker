@@ -1,4 +1,5 @@
 '''Tests the functions used to call the User database functions'''
+import os
 import pytest
 from packages.databases import DatabaseConnector
 from packages.user_database import UserFunctions
