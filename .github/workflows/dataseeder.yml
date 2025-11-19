@@ -29,7 +29,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Start DB for testing
-      run: docker compose up db
+      run: docker compose up -d db
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
