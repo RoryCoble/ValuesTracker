@@ -55,6 +55,9 @@ services:
       context: .
       dockerfile: dockerfiles/dataseeder_api.dockerfile
       network: host
+      args:
+        HOST: localhost
+        PORT: 5431
     ports:
       - "5002:5002"
     depends_on:
