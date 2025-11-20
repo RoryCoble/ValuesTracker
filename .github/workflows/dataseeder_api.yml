@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}_api
+  IMAGE_NAME: ${{ github.repository }}_dataseeder_api
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
