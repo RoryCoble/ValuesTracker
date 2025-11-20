@@ -8,7 +8,7 @@ COPY packages/user_database.py packages/user_database.py
 COPY tests/__init__.py tests/__init__.py
 COPY tests/test_api_requests.py tests/test_api_requests.py
 COPY tests/setup_functions.py tests/setup_functions.py
-COPY ui_localtest.txt .
+COPY env/ui_localtest.txt .
 RUN pip install -r ui_localtest.txt
 RUN pytest -v tests/
 
@@ -17,7 +17,7 @@ WORKDIR /app
 COPY packages/__init__.py packages/__init__.py
 COPY packages/api_requests.py packages/api_requests.py
 COPY packages/ui_settings.py packages/ui_settings.py
-COPY ui_release.txt .
+COPY env/ui_release.txt .
 COPY assets/ assets/
 COPY pages/ pages/
 COPY value_tracker/ value_tracker/
