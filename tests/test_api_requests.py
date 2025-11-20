@@ -12,7 +12,7 @@ def fixture_setup():
     SetupFunctions().truncate_users()
     SetupFunctions().seed_entities()
 
-    yield ApiRequests("http://localhost:5001/")
+    yield ApiRequests("http://localhost:5001")
 
     SetupFunctions().truncate_users()
     SetupFunctions().truncate_entities()
