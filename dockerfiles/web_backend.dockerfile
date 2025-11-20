@@ -1,6 +1,10 @@
 FROM python:3.13 AS base
 # Create integration testing environment
 RUN apt-get update
+ARG HOST
+ENV HOST=${HOST}
+ARG PORT
+ENV PORT=${PORT}
 COPY packages/__init__.py packages/__init__.py
 COPY packages/api_requests.py packages/api_requests.py
 COPY packages/databases.py packages/databases.py
