@@ -39,6 +39,11 @@ jobs:
           password: ${{ secrets.ghcr_password }}
         ports:
           - 5000:5001
+        options: >-
+          --health-cmd "curl http://localhost:5001/health"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 5
     
     steps:
     - name: Checkout repository
