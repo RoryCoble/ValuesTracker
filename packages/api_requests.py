@@ -9,6 +9,7 @@ class ApiRequests:
 
     def get_entities(self):
         """Gets all of the currently existing Entities"""
+        print(self.base_path)
         return rq.get(f"{self.base_path}/api/get_existing_entities", timeout=10)
 
     def get_historical_values(self, entity_code):
