@@ -38,7 +38,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.ghcr_password }}
         ports:
-          - 5000:5001
+          - 5001:5000
         options: >-
           --health-cmd "curl http://localhost:5000/health"
           --health-interval 10s
