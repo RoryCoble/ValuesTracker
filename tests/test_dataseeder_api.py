@@ -1,4 +1,5 @@
 '''Tests the Dataseeder Api endpoints'''
+import os
 from decimal import Decimal
 import pytest
 from packages.databases import DatabaseConnector, EntitiesValuesFunctions
@@ -13,8 +14,10 @@ def fixture_setup():
     object for testing and the EntitiesValues object in order to compare that the values
     created match expectations then removes any generated data
     """
+    host = os.getenv('HOST', 'localhost')
+    port = os.getenv('PORT', 5431)
     SetupFunctions().truncate_entities()
-    with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
+    with DatabaseConnector('EntitiesAndValues', 'data_seeder', host, port) as conn:
         _entities_values = EntitiesValuesFunctions(conn)
         _dataseeder = Dataseeder(_entities_values)
         app = dataseeder_api.dataseeder_api(_entities_values, _dataseeder)

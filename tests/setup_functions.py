@@ -1,29 +1,32 @@
 '''General functions that tests use to modify data'''
+import os
 from packages.databases import EntityOptions, DatabaseConnector, EntitiesValuesFunctions
 from packages.user_database import UserFunctions
 
 class SetupFunctions:
     '''Common test setup functions'''
+    host = os.getenv('HOST', 'localhost')
+    port = os.getenv('PORT', 5431)
 
-    def truncate_entities(self):
+    def truncate_entities(self, host=host, port=port):
         '''Clears the Entities and Entity Values tables via truncation'''
-        with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
+        with DatabaseConnector('EntitiesAndValues', 'data_seeder', host, port) as conn:
             _entities_values = EntitiesValuesFunctions(conn)
             with _entities_values.conn.cursor() as cur:
                 cur.execute('TRUNCATE TABLE public.entities, public.entity_values;')
                 conn.commit()
 
-    def truncate_users(self):
+    def truncate_users(self, host=host, port=port):
         '''Clears the Users and User Entities tables via truncation'''
-        with DatabaseConnector('EntitiesAndValues', 'api', "localhost", 5431) as conn:
+        with DatabaseConnector('EntitiesAndValues', 'api', host, port) as conn:
             _user = UserFunctions(conn)
             with _user.conn.cursor() as cur:
                 cur.execute('TRUNCATE TABLE public.users, public.user_entities;')
                 conn.commit()
 
-    def seed_entities(self):
+    def seed_entities(self, host=host, port=port):
         '''Creates sample entities for the Api to play with for testing'''
-        with DatabaseConnector('EntitiesAndValues', 'data_seeder', "localhost", 5431) as conn:
+        with DatabaseConnector('EntitiesAndValues', 'data_seeder', host, port) as conn:
             _entities_values = EntitiesValuesFunctions(conn)
             _entities_values.add_entity('AAAAA', EntityOptions.SGFB.value, 0.2, 0.1, 0.5)
             _entities_values.add_entity('BBBBB', EntityOptions.V.value, 0.2, 0.1, 0.5)

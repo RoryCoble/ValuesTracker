@@ -11,6 +11,10 @@ def values_tracker_api(_entities_values, _user_functions):
     app.config['EntitiesValues'] = _entities_values
     app.config['UserFunctions'] = _user_functions
 
+    @app.route('/health', methods=['GET'])
+    def health_check():
+        return 200
+
     @app.route('/api/get_existing_entities', methods=['GET'])
     def get_entities():
         """Gets all of the currently existing Entities"""

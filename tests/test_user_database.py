@@ -1,4 +1,5 @@
 '''Tests the functions used to call the User database functions'''
+import os
 import pytest
 from packages.databases import DatabaseConnector
 from packages.user_database import UserFunctions
@@ -12,7 +13,9 @@ def fixture_setup():
     then cleans up any generated data
     """
     SetupFunctions().truncate_users()
-    with DatabaseConnector('EntitiesAndValues', 'api', "localhost", 5431) as conn:
+    host = os.getenv('HOST', 'localhost')
+    port = os.getenv('PORT', 5431)
+    with DatabaseConnector('EntitiesAndValues', 'api', host, port) as conn:
         _user = UserFunctions(conn)
         yield _user
     SetupFunctions().truncate_users()

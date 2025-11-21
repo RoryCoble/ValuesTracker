@@ -4,8 +4,8 @@ networks:
 services:
   db:
     build:
-      context: ./sql
-      dockerfile: db.dockerfile
+      context: .
+      dockerfile: dockerfiles/db.dockerfile
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: EntitiesAndValues
@@ -22,8 +22,11 @@ services:
   dataseeder:
     build:
       context: .
-      dockerfile: dataseeder.dockerfile
+      dockerfile: dockerfiles/dataseeder.dockerfile
       network: host
+      args:
+        HOST: localhost
+        PORT: 5431
     depends_on:
       db:
         condition: service_healthy
@@ -33,8 +36,11 @@ services:
   api:
     build:
       context: .
-      dockerfile: api.dockerfile
+      dockerfile: dockerfiles/api.dockerfile
       network: host
+      args:
+        HOST: localhost
+        PORT: 5431
     ports:
       - "5001:5000"
     depends_on:
@@ -47,8 +53,11 @@ services:
   dataseeder_api:
     build:
       context: .
-      dockerfile: dataseeder_api.dockerfile
+      dockerfile: dockerfiles/dataseeder_api.dockerfile
       network: host
+      args:
+        HOST: localhost
+        PORT: 5431
     ports:
       - "5002:5002"
     depends_on:
@@ -61,8 +70,11 @@ services:
   web_backend:
     build:
       context: . 
-      dockerfile: web_backend.dockerfile
+      dockerfile: dockerfiles/web_backend.dockerfile
       network: host
+      args:
+        HOST: localhost
+        PORT: 5431
     ports:
       - 8000:8000
     depends_on:
@@ -73,8 +85,11 @@ services:
   web_frontend:
     build:
       context: .
-      dockerfile: web_frontend.dockerfile
+      dockerfile: dockerfiles/web_frontend.dockerfile
       network: host
+      args:
+        HOST: localhost
+        PORT: 5431
     ports:
       - 3000:80
     depends_on:
@@ -88,7 +103,7 @@ services:
   cypress:
     build:
       context: .
-      dockerfile: cypress.dockerfile
+      dockerfile: dockerfiles/cypress.dockerfile
     depends_on:
       - dataseeder_api
       - web_frontend
