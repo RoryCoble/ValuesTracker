@@ -1,4 +1,4 @@
-name: Web Backend Docker Build And Publish
+name: Web Frontend Docker Build And Publish
 on:
   push:
     branches: [ "main" ]
