@@ -64,16 +64,16 @@ def test_login_page_submit_button_displays(setup):
         "Submit button text is not correct"
     ).to_contain_text("Submit")
 
-def test_login_page_register_link_displays(setup):
+def test_login_page_register_button_displays(setup):
     '''Tests that the register link on the Login page displays'''
     (login_page, _) = setup
     expect(
-        login_page.register_link,
-        "Register link is not displayed"
+        login_page.register_button,
+        "Register button is not displayed"
     ).to_be_visible()
     expect(
-        login_page.register_link,
-        "Register link text is not correct"
+        login_page.register_button,
+        "Register button text is not correct"
     ).to_contain_text("Register")
 
 def test_login_successful(setup):

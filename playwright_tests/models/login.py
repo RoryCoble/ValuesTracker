@@ -6,7 +6,7 @@ class LoginPage:
         self.username_input = page.locator('[data-testid="usernameInput"]')
         self.password_input = page.locator('[data-testid="passwordInput"]')
         self.submit_button = page.locator('[data-testid="submitButton"]')
-        self.register_link = page.locator('[data-testid="registerLink"]')
+        self.register_button = page.locator('[data-testid="registerButton"]')
         self.error_message = page.locator('li[data-sonner-toast]')
 
     def login(self, username, password):

@@ -78,15 +78,13 @@ def login_page():
                                 "data-testid" : "submitButton",
                             },
                         ),
-                        rx.center(
-                            rx.link(
-                                "Register", 
-                                on_click=rx.redirect("/register"),
-                                custom_attrs = {
-                                    "data-testid" : "registerLink",
-                                },
-                            ),
-                            width="100%",
+                        rx.button(
+                            "Register", 
+                            on_click=rx.redirect("/register"),
+                            color_scheme="purple",
+                            custom_attrs = {
+                                "data-testid" : "registerButton",
+                            },
                         ),
                     ),
                     width="100%",

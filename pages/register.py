@@ -83,15 +83,13 @@ def register_page():
                                 "data-testid" : "submitButton",
                             },
                         ),
-                        rx.center(
-                            rx.link(
-                                "Cancel", 
-                                on_click=rx.redirect("/login"),
-                                custom_attrs = {
-                                    "data-testid" : "cancelLink",
-                                },
-                            ),
-                            width="100%",
+                        rx.button(
+                            "Cancel", 
+                            on_click=rx.redirect("/login"),
+                            color_scheme="purple",
+                            custom_attrs = {
+                                "data-testid" : "cancelButton",
+                            },
                         ),
                     ),
                     width="100%",

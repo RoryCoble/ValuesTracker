@@ -14,7 +14,7 @@ describe('Register page', () => {
     let user = 'api'    
     cy.task('databaseQuery', { query, host, port, user })
     cy.visit('/')
-    cy.get('[data-testid="registerLink"]').dblclick()
+    cy.get('[data-testid="registerButton"]').click()
   })    
     
   it('displays the expected elements', () => {
@@ -23,11 +23,11 @@ describe('Register page', () => {
     cy.get('[data-testid="passwordInput"]').should('be.visible').and('have.attr', 'placeholder', 'Password')  
     cy.get('[data-testid="emailInput"]').should('be.visible').and('have.attr', 'placeholder', 'Email')
     cy.get('[data-testid="submitButton"]').should('be.visible').and('have.text', 'Submit')
-    cy.get('[data-testid="cancelLink"]').should('be.visible').and('have.text', 'Cancel')
+    cy.get('[data-testid="cancelButton"]').should('be.visible').and('have.text', 'Cancel')
   })
 
   it('returns to the login page when cancel is clicked', () => {
-    cy.get('[data-testid="cancelLink"]').dblclick()
+    cy.get('[data-testid="cancelButton"]').click()
     cy.url().should('include', '/login')  
   })
 
@@ -38,7 +38,7 @@ describe('Register page', () => {
 
   it('throws an error when someone tries to register an existing user', () => {
     register('a','a','a')
-    cy.contains('Register').dblclick()
+    cy.contains('Register').click()
     register('a','a','a')
     cy.get('li[data-sonner-toast]').should('be.visible').and('have.text', 'User failed to be created')
   })
