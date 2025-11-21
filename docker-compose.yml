@@ -87,6 +87,9 @@ services:
       context: .
       dockerfile: dockerfiles/web_frontend.dockerfile
       network: host
+      args:
+        HOST: localhost
+        PORT: 5431
     ports:
       - 3000:80
     depends_on:
