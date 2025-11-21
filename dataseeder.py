@@ -1,5 +1,4 @@
 '''Dataseeder class'''
-from datetime import datetime
 import random
 import string
 import math
@@ -89,7 +88,7 @@ class Dataseeder:
                 for _ in range(0, 10 - len(entities)):
                     self.generate_new_entity()
                 entities = [i[0] for i in self.entities_values.get_existing_entities()]
-            if i < 10:    
+            if i < 10:
                 for entity in entities:
                     self.add_entity_value(i, entity)
             else:

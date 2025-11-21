@@ -102,3 +102,37 @@ def tests_user_can_register(setup):
     (register_page, _) = setup
     register_page.register_user("a", "a", "a")
     expect(register_page.page).to_have_url(re.compile("/login"))
+
+def tests_register_user_failed_error_message(setup):
+    '''
+    Tests that the error message appears when a 
+    user's provided information cannot be registered
+    '''
+    (register_page, _) = setup
+    register_page.register_user("a", "a", "a")
+    LoginPage(register_page.page).register_button.click()
+    register_page.register_user("a", "a", "a")
+    expect(
+        register_page.error_message,
+        "Error message does not display"
+    ).to_be_visible()
+    expect(
+        register_page.error_message,
+        "Error message text is incorrect"
+    ).to_contain_text("User failed to be created")
+
+def tests_register_inputs_error_on_empty_strings(setup):
+    '''
+    Tests that the error message appears when the
+    user submits empty strings
+    '''
+    (register_page, _) = setup
+    register_page.register_user("", "", "")
+    expect(
+        register_page.error_message,
+        "Error message does not display"
+    ).to_be_visible()
+    expect(
+        register_page.error_message,
+        "Error message text is incorrect"
+    ).to_contain_text("All fields must contain something")

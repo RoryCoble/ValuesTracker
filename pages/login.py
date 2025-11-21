@@ -81,6 +81,7 @@ def login_page():
                         rx.button(
                             "Register", 
                             on_click=rx.redirect("/register"),
+                            type="button",
                             color_scheme="purple",
                             custom_attrs = {
                                 "data-testid" : "registerButton",

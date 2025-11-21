@@ -8,6 +8,7 @@ class RegisterPage:
         self.email_input = page.locator('[data-testid="emailInput"]')
         self.submit_button = page.locator('[data-testid="submitButton"]')
         self.cancel_button = page.locator('[data-testid="cancelButton"]')
+        self.error_message = page.locator('li[data-sonner-toast]')
 
     def register_user(self, username, password, email):
         '''
