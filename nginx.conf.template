@@ -1,35 +1,33 @@
 server { 
- listen 80;
- listen  [::]:80;
- server_name web_frontend;
- worker_rlimit_nofile 1048576;
+    listen 80;
+    listen  [::]:80;
+    server_name web_frontend;
 
- error_page   404  /404.html;
+    error_page   404  /404.html;
 
- location /_event {
-    proxy_set_header   Connection "upgrade";
-    proxy_pass ${PROXY_PASS};
-    proxy_http_version 1.1;
-    proxy_set_header   Upgrade $http_upgrade;
- }
+    location /_event {
+        proxy_set_header   Connection "upgrade";
+        proxy_pass ${PROXY_PASS};
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade $http_upgrade;
+    }
 
- location /ping {
-    proxy_pass ${PROXY_PASS};
- }
+    location /ping {
+        proxy_pass ${PROXY_PASS};
+    }
 
- location /_upload {
-    proxy_pass ${PROXY_PASS};
- }
+    location /_upload {
+        proxy_pass ${PROXY_PASS};
+    }
 
- location /health {
-    access_log off;
-    add_header 'Content-Type' 'application/json';
-    return 200 '{"status":"UP"}';
- }
+    location /health {
+        access_log off;
+        add_header 'Content-Type' 'application/json';
+        return 200 '{"status":"UP"}';
+    }
 
- location / {
-   # This would be the directory where your Reflex app's static files are stored at
-   root /usr/share/nginx/html;
- }
-
+    location / {
+        # This would be the directory where your Reflex app's static files are stored at
+        root /usr/share/nginx/html;
+    }
 }
