@@ -100,4 +100,4 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r env/playwright.txt
     - name: Test with pytest
-      run: pytest -v playwright_tests/
+      run: PORT=5432 pytest -v playwright_tests/
