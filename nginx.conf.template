@@ -21,6 +21,12 @@ server {
     proxy_pass ${PROXY_PASS};
  }
 
+ location = /health {
+    access_log off;
+    add_header 'Content-Type' 'application/json';
+    return 200 '{"status":"UP"}';
+ }
+
  location / {
    # This would be the directory where your Reflex app's static files are stored at
    root /usr/share/nginx/html;
