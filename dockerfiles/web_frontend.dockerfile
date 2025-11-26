@@ -34,4 +34,3 @@ ARG PROXY_PASS
 ENV PROXY_PASS=${PROXY_PASS}
 COPY --from=builder /app/.web/build/client /usr/share/nginx/html
 COPY ./nginx.conf.template /etc/nginx/templates/
-COPY ./nginx.conf /etc/nginx/
