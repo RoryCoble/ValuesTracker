@@ -36,7 +36,7 @@ class State(rx.State):
             self.entities)
         self.totals_data = ApiRequests(
             self.api_url).get_data_for_totals_chart(
-            self.collected_graph_data, self.entities) 
+            self.collected_graph_data, self.entities)
         self.last_count = last_count if last_count is not None else 0
 
     # pylint: disable=not-callable
@@ -52,7 +52,7 @@ class State(rx.State):
                     self.collected_graph_data, self.entities, self.last_count)
                 self.totals_data = ApiRequests(
                     self.api_url).get_data_for_totals_chart(
-                    self.collected_graph_data, self.entities) 
+                    self.collected_graph_data, self.entities)
                 self.last_count = last_count if last_count is not None else 0
             await asyncio.sleep(70)
 

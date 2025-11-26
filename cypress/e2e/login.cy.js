@@ -24,7 +24,7 @@ describe('Login page', () => {
     cy.get('[data-testid="usernameInput"]').should('be.visible').and('have.attr', 'placeholder', 'User Name')
     cy.get('[data-testid="passwordInput"]').should('be.visible').and('have.attr', 'placeholder', 'Password')
     cy.get('[data-testid="submitButton"]').should('be.visible').and('have.text', 'Submit')
-    cy.get('[data-testid="registerLink"]').should('be.visible').and('have.text', 'Register')
+    cy.get('[data-testid="registerButton"]').should('be.visible').and('have.text', 'Register')
   })
 
   it('logs in successfully', () => {

@@ -75,6 +75,8 @@ services:
       args:
         HOST: localhost
         PORT: 5431
+        REDIS_URL: redis://redis PYTHONUNBUFFERED=1
+        CUSTOM_API_URL: http://api:5000
     ports:
       - 8000:8000
     depends_on:
@@ -90,6 +92,7 @@ services:
       args:
         HOST: localhost
         PORT: 5431
+        PROXY_PASS: http://web_backend:8000
     ports:
       - 3000:80
     depends_on:
@@ -98,6 +101,8 @@ services:
       - frontend  
   redis:
     image: redis
+    ports:
+      - 6379:6379
     networks:
       - frontend
   cypress:

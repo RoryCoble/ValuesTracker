@@ -17,8 +17,10 @@ RUN pip install -r ui_localtest.txt
 RUN pytest -v tests/
 
 FROM base AS release
-ENV REDIS_URL=redis://redis PYTHONUNBUFFERED=1
-ENV CUSTOM_API_URL=http://api:5000
+ARG REDIS_URL
+ENV REDIS_URL=${REDIS_URL}
+ARG CUSTOM_API_URL
+ENV CUSTOM_API_URL=${CUSTOM_API_URL}
 WORKDIR /app
 COPY packages/__init__.py packages/__init__.py
 COPY packages/api_requests.py packages/api_requests.py
