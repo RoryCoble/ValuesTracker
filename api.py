@@ -12,7 +12,7 @@ def values_tracker_api(_entities_values, _user_functions):
 
     @app.route('/health', methods=['GET'])
     def health_check():
-        return 200
+        return { 'status': 200 }
 
     @app.route('/api/get_existing_entities', methods=['GET'])
     def get_entities():

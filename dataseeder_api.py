@@ -11,7 +11,7 @@ def dataseeder_api(_entities_values, _dataseeder):
 
     @app.route('/health', methods=['GET'])
     def health_check():
-        return 200
+        return { 'status': 200 }
 
     @app.route('/dataseed/add_entity', methods = ['POST'])
     def post_specific_entity():
