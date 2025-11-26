@@ -99,6 +99,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r env/playwright.txt
-        playwright install
+    - name: Ensure browsers are installed
+      run: python -m playwright install --with-deps
     - name: Test with pytest
       run: PORT=5432 pytest -v playwright_tests/
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-traces
+        path: test-results/
