@@ -81,8 +81,8 @@ jobs:
           PROXY_PASS: http://locahost:8000
         options: >-
           --health-cmd "curl http://localhost:3000"
-          --health-interval 10s
-          --health-timeout 5s
+          --health-interval 30s
+          --health-timeout 10s
           --health-retries 5  
       redis:
         image: redis
