@@ -30,6 +30,7 @@ RUN pip install -r ui_release.txt
 RUN reflex export --frontend-only --no-zip
 
 FROM nginx
-
+ARG PROXY_PASS
+ENV PROXY_PASS=${PROXY_PASS}
 COPY --from=builder /app/.web/build/client /usr/share/nginx/html
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx.conf.template /etc/nginx/templates/

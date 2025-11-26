@@ -21,12 +21,25 @@ class RegisterState(rx.State):
         Error on registration
         """
         try:
-            _ = ApiRequests(self.api_url).create_user(
-                form_data["userName"],
-                form_data["password"],
-                form_data["email"]
-            ).json()
-            return rx.redirect("/login")
+            if bool(form_data["userName"]
+            ) and bool(form_data["password"]
+            ) and bool(form_data["email"]):
+                _ = ApiRequests(self.api_url).create_user(
+                    form_data["userName"],
+                    form_data["password"],
+                    form_data["email"]
+                ).json()
+                return rx.redirect("/login")
+            return rx.toast(
+                "All fields must contain something",
+                position = "top-center",
+                style = {
+                    "background-color": "red",
+                    "color": "white",
+                    "border": "1px solid red",
+                    "border-radius": "0.53m",
+                },
+            )
         except Exception as e:
             return rx.toast(
                 f"{e}",
@@ -83,15 +96,14 @@ def register_page():
                                 "data-testid" : "submitButton",
                             },
                         ),
-                        rx.center(
-                            rx.link(
-                                "Cancel", 
-                                on_click=rx.redirect("/login"),
-                                custom_attrs = {
-                                    "data-testid" : "cancelLink",
-                                },
-                            ),
-                            width="100%",
+                        rx.button(
+                            "Cancel", 
+                            on_click=rx.redirect("/login"),
+                            type="button",
+                            color_scheme="purple",
+                            custom_attrs = {
+                                "data-testid" : "cancelButton",
+                            },
                         ),
                     ),
                     width="100%",

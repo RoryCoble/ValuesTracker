@@ -1,0 +1,108 @@
+name: UI Test
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+env:
+  REGISTRY: ghcr.io
+jobs:
+  test-ui:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    services:
+      db:
+        image: ghcr.io/rorycoble/valuestracker_db:main
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.ghcr_password }}
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: EntitiesAndValues
+        options: >-
+          --health-cmd "pg_isready -U postgres -d EntitiesAndValues"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 5
+      api:
+        image: ghcr.io/rorycoble/valuestracker_api:main
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.ghcr_password }}
+        ports:
+          - 5001:5000
+        options: >-
+          --health-cmd "curl http://localhost:5000/health"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 5
+      dataseeder_api:    
+        image: ghcr.io/rorycoble/valuestracker_dataseeder_api:main
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.ghcr_password }}
+        ports:
+          - 5002:5002
+        options: >-
+          --health-cmd "curl http://localhost:5002/health"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 5
+      web_backend:
+        image: ghcr.io/rorycoble/valuestracker_web_backend:main
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.ghcr_password }}
+        ports:
+          - 8000:8000
+        env:
+          REDIS_URL: redis://localhost:6379 PYTHONUNBUFFERED=1
+          CUSTOM_API_URL: http://localhost:5001
+        options: >-
+          --health-cmd "curl http://localhost:8000/ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      web_frontend:    
+        image: ghcr.io/rorycoble/valuestracker_web_frontend:main
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.ghcr_password }}
+        ports:
+          - 3000:3000
+        env:
+          PROXY_PASS: http://locahost:8000
+        options: >-
+          --health-cmd "ping http://localhost:3000"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r env/playwright.txt
+    - name: Test with pytest
+      run: pytest -v playwright_tests/

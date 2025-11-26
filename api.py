@@ -1,5 +1,4 @@
 '''Web Api for Values Tracker'''
-from datetime import datetime
 from flask import Flask, jsonify, request
 
 from packages.databases import DatabaseConnector, EntitiesValuesFunctions

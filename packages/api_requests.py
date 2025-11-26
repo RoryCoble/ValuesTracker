@@ -148,7 +148,7 @@ class ApiRequests:
             else:
                 df2 = pd.DataFrame(collected_graph_data[i])
                 df = df.merge(df2,
-                              how='outer', 
+                              how='outer',
                               on='count'
                              ).rename(
                     columns={'value':entity})
