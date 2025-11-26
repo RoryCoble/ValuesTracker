@@ -2,7 +2,7 @@ server {
  listen 80;
  listen  [::]:80;
  server_name web_frontend;
-
+ worker_rlimit_nofile 1048576;
 
  error_page   404  /404.html;
 
