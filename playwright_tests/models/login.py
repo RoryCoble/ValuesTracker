@@ -16,7 +16,7 @@ class LoginPage:
         username -- who to login
         password -- their password
         '''
-        self.page.goto('http://localhost:3000/')
+        self.page.goto('http://localhost:3000')
         self.username_input.fill(username)
         self.password_input.fill(password)
         self.submit_button.click()
