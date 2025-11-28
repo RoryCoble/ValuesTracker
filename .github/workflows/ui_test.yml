@@ -100,9 +100,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r env/playwright.txt
     - name: Ensure browsers are installed
-      run: python -m playwright install --with-deps
+      run: python -m playwright install webkit --with-deps
     - name: Test with pytest
-      run: PORT=5432 pytest -v playwright_tests/
+      run: PORT=5432 CUSTOM_API_URL=http://localhost:5000 pytest -v playwright_tests/
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
