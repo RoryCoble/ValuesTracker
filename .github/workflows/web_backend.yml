@@ -40,7 +40,7 @@ jobs:
         ports:
           - 5001:5001
         options: >-
-          --health-cmd "curl http://localhost:5000/health"
+          --health-cmd "curl http://localhost:5001/health"
           --health-interval 10s
           --health-timeout 10s
           --health-retries 5
