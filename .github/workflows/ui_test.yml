@@ -75,7 +75,7 @@ jobs:
           REDIS_URL: redis://localhost:6379 PYTHONUNBUFFERED=1
           CUSTOM_API_URL: http://localhost:5000
         options: >-
-          --health-cmd "curl http://localhost:5000/health"
+          --health-cmd "curl http://localhost:8000/ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
