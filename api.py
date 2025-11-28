@@ -118,4 +118,6 @@ if __name__ == "__main__":
     with DatabaseConnector('EntitiesAndValues', 'api', 'db', 5432) as conn:
         _entities_values = EntitiesValuesFunctions(conn)
         _user_functions = UserFunctions(conn)
-        values_tracker_api(_entities_values, _user_functions).run(host='0.0.0.0', debug = True)
+        values_tracker_api(_entities_values, _user_functions).run(host='0.0.0.0',
+                                                         port='5001',
+                                                         debug = True)

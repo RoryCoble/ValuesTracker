@@ -42,7 +42,7 @@ services:
         HOST: localhost
         PORT: 5431
     ports:
-      - "5001:5000"
+      - "5001:5001"
     depends_on:
       db:
         condition: service_healthy
@@ -76,7 +76,7 @@ services:
         HOST: localhost
         PORT: 5431
         REDIS_URL: redis://redis PYTHONUNBUFFERED=1
-        CUSTOM_API_URL: http://api:5000
+        CUSTOM_API_URL: http://api:5001
     ports:
       - 8000:8000
     depends_on:

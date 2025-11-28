@@ -37,7 +37,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.ghcr_password }}
         ports:
-          - 5000:5000
+          - 5001:5001
         options: >-
           --health-cmd "curl http://localhost:5000/health"
           --health-interval 10s
@@ -73,7 +73,7 @@ jobs:
           - 8000:8000
         env:
           REDIS_URL: redis://localhost:6379 PYTHONUNBUFFERED=1
-          CUSTOM_API_URL: http://localhost:5000
+          CUSTOM_API_URL: http://localhost:5001
         options: >-
           --health-cmd "curl http://localhost:8000/ping"
           --health-interval 10s
@@ -102,7 +102,7 @@ jobs:
     - name: Ensure browsers are installed
       run: python -m playwright install webkit --with-deps
     - name: Test with pytest
-      run: PORT=5432 CUSTOM_API_URL=http://localhost:5000 pytest -v playwright_tests/
+      run: PORT=5432 CUSTOM_API_URL=http://localhost:5001 pytest -v playwright_tests/
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
