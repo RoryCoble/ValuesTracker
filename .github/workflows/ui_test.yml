@@ -87,12 +87,7 @@ jobs:
         ports:
           - 3000:80
         env:
-          PROXY_PASS: http://localhost:8000
-        options: >-
-          --health-cmd "curl http://0.0.0.0:8000/ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          PROXY_PASS: http://0.0.0.0:8000
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
