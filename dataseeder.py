@@ -49,8 +49,8 @@ class Dataseeder:
                     + (third_constant*count)**-4 + 1
                 return common_value if random.randrange(0,10) <= 7 else uncommon_value
             case EntityOptions.V.value:
-                return abs(first_constant*math.sin(count)) + second_constant*random.uniform(-1,1) \
-                + third_constant*random.randrange(0,2) + 1
+                return abs(first_constant*math.sin(count) + second_constant*random.uniform(-1,1) \
+                + third_constant*random.randrange(0,2) + 1)
             case EntityOptions.FD.value:
                 return first_constant*second_constant/(count + 1) \
                 + third_constant*random.randrange(0,2) + 1
