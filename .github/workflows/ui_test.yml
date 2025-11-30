@@ -72,8 +72,8 @@ jobs:
         ports:
           - 8000:8000
         env:
-          REDIS_URL: redis://localhost:6379 PYTHONUNBUFFERED=1
-          CUSTOM_API_URL: http://localhost:5001
+          REDIS_URL: redis://redis:6379 PYTHONUNBUFFERED=1
+          CUSTOM_API_URL: http://api:5001
         options: >-
           --health-cmd "curl http://localhost:8000/ping"
           --health-interval 10s
@@ -87,7 +87,7 @@ jobs:
         ports:
           - 3000:80
         env:
-          PROXY_PASS: http://localhost:8000
+          PROXY_PASS: http://web_backend:8000
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
