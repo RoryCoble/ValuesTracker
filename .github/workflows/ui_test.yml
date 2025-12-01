@@ -103,10 +103,10 @@ jobs:
       run: python -m playwright install webkit --with-deps
     - name: Test with pytest
       run: PORT=5432 CUSTOM_API_URL=http://localhost:5001 pytest -v playwright_tests/ --doctest-modules --junitxml=junit/test-results.xml
-      - name: Upload pytest test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-results
-          path: junit/test-results.xml
-        # Use always() to always run this step to publish test results when there are test failures
-        if: ${{ always() }}
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-results
+        path: junit/test-results.xml
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}
