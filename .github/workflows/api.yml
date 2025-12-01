@@ -9,36 +9,19 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}_api
 jobs:
-  waitForWorkflows:
-    name: Wait for workflows
+  wait-for-workflows:
     runs-on: ubuntu-latest
-    if: always()
+    timeout-minutes: 10
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4.2.1
+      - uses: int128/wait-for-workflows-action@v1
         with:
-          ref:
-            ${{ github.event.pull_request.head.sha ||
-            github.event.merge_group.head_sha }}
-
-      - name: Wait for workflows
-        id: wait
-        # Go to https://github.com/smartcontractkit/.github/tags
-        # To find the most recent version of wait-for-workflows
-        uses: smartcontractkit/.github/actions/wait-for-workflows@0.1.3
-        with:
-          max-timeout: "900"
-          polling-interval: "30"
-          exclude-workflow-names: "UI Test, Dataseeder Api Docker Build And Publish, Dataseeder Docker Build And Publish, Web Backend Docker Build And Publish, Web Frontend Docker Build And Publish"
-          exclude-workflow-ids: ""
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          DEBUG: "true"
+          exclude-workflow-names: |  
+            Web *
+            UI Test
+            Dataseeder *
 
   build-and-push-image:
-    needs: [waitForWorkflows]
     runs-on: ubuntu-latest
-    if: always()
     permissions:
       contents: read
       packages: write
