@@ -9,8 +9,22 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}_dataseeder_api
 jobs:
-  build-and-push-image:
+  wait-for-workflows:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: int128/wait-for-workflows-action@v1
+        with:
+          exclude-workflow-names: |  
+            Web *
+            UI Test
+            Dataseeder *
+            Api *
+
+  build-and-push-image:
+    needs: [wait-for-workflows]
+    runs-on: ubuntu-latest
+    if: always()
     permissions:
       contents: read
       packages: write
