@@ -21,3 +21,15 @@ docker compose up -d cypress
 docker compose up -d dataseeder
 ```
 Then you can navigate a web browser to http://localhost:3000 and explore the application. Feel free to message me on LinkedIn with any questions or suggestions for improvements.
+
+## Updates: Python Playwright tests added
+
+With the application running, simply enter the commands below to see the testing output or go to playwright_tests and look them over.
+```
+pip install -r env/playwright.txt
+pytest -v playwright_tests/
+```
+
+## Updates: GitHub workflows complete with end to end testing!
+
+Building on the above I added a series of github actions workflows that take any push to main, or PR, and rebuilds the images in dependency order. For example, until the Database workflow is finished the Dataseeder, Dataseeder Api, and Api images will not be built. That way, during the test step for those images the newest version of Database is checked against the new code to ensure that the integration tests still pass for these latest changes. This roles all the way up until the application's images are built and the UI Test workflow runs. There the entire application is spun up, in the pipelines memory, and an entire Playwright test suite is run against the newest full version of the application. Here further workflows could be added to start triggering releases of builds that have been fully vetted. The files for this change be found at [.github/workflows/](.github/workflows/).
